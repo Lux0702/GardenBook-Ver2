@@ -1,0 +1,39 @@
+:where(.css-dev-only-do-not-override-j9bb5n).ant-card .ant-card-head {
+    background-color: #3697A6;
+}
+/* topbook.css */
+
+.book-item {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .book-item:hover {
+    background-color: #f0f0f0; /* Màu nền khi hover */
+  }
+  
+  /* Đảm bảo các class của Ant Design không bị ghi đè */
+  .ant-list-item-meta-title {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .ant-list-item-meta-description {
+    color: #888;
+  }
+  
+  .ant-card {
+    border-radius: 8px;
+  }
+  
+  .ant-card-head {
+    border-radius: 8px 8px 0 0;
+    background-color: #3697A6 !important;
+
+  }
+  
+  .ant-card-body {
+    padding: 16px;
+  }
+  
+  

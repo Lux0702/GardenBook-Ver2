@@ -1,0 +1,11 @@
+.ant-input-textarea {
+  transition: height 0.2s;
+}
+
+.ant-input-textarea::placeholder {
+  color: #ccc;
+}
+
+.ant-btn-link:hover {
+  border: none;
+}

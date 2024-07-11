@@ -1,0 +1,107 @@
+.home-container {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    border: 0.5px;
+    box-shadow: inset;
+    margin-top: 50px;
+    margin-bottom: 10px;
+}
+.home-container .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+}
+.home-container h2{
+    margin: 25px 0 0 15px;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    color: #393280;
+    font-family: Inter, sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 44px;
+}
+.home-container h3{
+  margin: 25px 0 0 15px;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  color: #575569;
+  font-family: Inter, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 44px;
+  text-align: end;
+  cursor: pointer;
+}
+.home-container h3:hover{
+  color: #393280;
+  text-decoration:underline;
+}
+.swiper-container {
+  margin: auto;
+  box-sizing: border-box;
+}
+.title-h2{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.container-bestseller {
+  margin-top: 20px;
+  width: 100%; /* Thay đổi từ 80% thành 100% */
+  display: inline-flex;
+  justify-content: space-between; /* Thay đổi từ space-between thành flex-start */
+  align-items: flex-start;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  box-shadow: inset;
+  flex-grow: 1;
+  flex-direction: row;
+  height: auto;
+  overflow-x: auto;
+  background-image: url('../images/backgroundLogin.jpg');
+  background-size: cover; 
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  border-radius: 8px;
+  
+}
+.react-multi-carousel-list {
+  display: block;
+  width: 100%;
+}
+
+.react-multi-carousel-item {
+  display: block;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+/* Styles for mobile */
+@media (max-width: 767px) {
+    .home-container {
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .home-container h2 {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+  

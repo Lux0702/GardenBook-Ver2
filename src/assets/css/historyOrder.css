@@ -1,0 +1,101 @@
+.order-history {
+  margin: 20px;
+}
+.list-order-scroll{
+  margin: 20px;
+  max-height: 600px; /* Đặt chiều cao tối đa cho container */
+  overflow-y: auto; /* Bật cuộn dọc khi nội dung vượt quá chiều cao tối đa */
+  /* padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff; */
+}
+.order-history h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+.order-card {
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shop-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+
+}
+
+.order-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.total-amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-card .ant-card-body {
+  padding: 12px;
+}
+
+/* custom tab */
+.ant-tabs-nav .ant-tabs-tab {
+  flex: 1; /* Đặt kích thước linh hoạt để các tab rộng ra và chiếm đều toàn bộ không gian */
+  text-align: center; /* Căn giữa văn bản trong tab */
+  margin: 1px;
+  padding: 5px 0;
+}
+
+.ant-tabs-nav{
+  border: 1px solid #ccc;
+  background-color: rgb(245, 247, 247);
+  padding: 5px;
+  padding-bottom: 0;
+  border-radius: 5px;
+}
+.ant-tabs-nav .ant-tabs-tab-btn {
+  font-size: 16px; /* Tăng kích thước chữ của tab */
+  margin: 0;
+
+}
+
+.custom-tabs .ant-tabs-nav {
+  display: flex;
+  justify-content: space-between; /* Phân bố đều các tab */
+  border-bottom: 2px solid #f0f0f0;
+  align-items: center;
+}
+
+.custom-tabs .ant-tabs-tab {
+  display: flex;
+  justify-content: center; /* Căn giữa văn bản trong tab */
+  text-align: center;
+}
+.ant-tabs-nav-list{
+  width: 100%;
+}
+.custom-tabs .ant-tabs-ink-bar {
+  height: 4px; /* Đặt chiều cao cho thanh dưới tab */
+  background-color: #1890ff; /* Màu sắc cho thanh dưới tab */
+}

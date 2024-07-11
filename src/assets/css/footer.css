@@ -1,0 +1,76 @@
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  background-color: #3697A6;
+  color: #FFFFFF;
+  width: 100%;
+  padding: 5px;
+  flex-wrap: wrap;
+  box-sizing: border-box; 
+  bottom: 0;
+  /* margin-top: 50px; */
+}
+
+.footer-column {
+  margin: 25px;
+  flex-basis: 20%;
+  display: flex; /* Thêm thuộc tính này để căn đều các phần tử bên trong */
+  flex-direction: column; /* Hiển thị các phần tử bên trong theo chiều dọc */
+  justify-content: flex-start; /* Căn các phần tử bên trong lên trên cùng */
+}
+
+.column-links {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Cho phép các phần tử trong cột mở rộng để căn đều */
+}
+
+.column-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.column-links li {
+  margin-bottom: 5px;
+}
+
+.column-links a {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.column-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-container img{
+  width: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều ngang của container */
+  height: auto; /* Giữ tỷ lệ khung hình ảnh */
+  max-width: 188px; /* Giới hạn kích thước tối đa của hình ảnh */
+  max-height: 188px;
+  
+}
+
+.social img{
+  margin: 10px;
+  width: 40px;
+  height: 40px;
+  border: none !important;
+}
+.social ul{
+  list-style-type: none;
+  flex-wrap: wrap;
+  overflow-wrap: break-word;
+}
+.social ul li {
+  flex-wrap: wrap;
+  word-wrap: break-word;
+}
+.icon-li {
+  display: inline-block;
+  margin-right: 1rem;
+
+}
+

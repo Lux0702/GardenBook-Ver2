@@ -1,0 +1,372 @@
+/* productDetail.css */
+.product-detail {
+    display: flex;
+    padding: 20px;
+    width: 90%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    box-sizing: border-box;
+    margin: 10px auto;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    
+  }
+  
+  .product-detail img {
+    max-width: 500px;
+    width: 450px;
+    height: 525px;
+    margin-right: 20px;
+    object-fit: cover; 
+    object-position: center;
+    border-radius: 8px;
+  }
+  
+  .product-info {
+    max-width: 65%;
+    margin-left: 25px;
+    
+  }
+  
+  .product-info h2 {
+    font-size: 30px;
+    margin-bottom: 5px;
+    max-width: 100%;
+    max-height: auto;
+    font-family: 'Nunito Sans', 'sans-serif';
+    line-height: 1.5em;
+    overflow-wrap: break-word;
+    /* padding-bottom: 16px; */
+    font-weight:bold ;
+  }
+  
+  .product-info p {
+    font-size: 1em;
+    font-weight: normal;
+    color: #333;
+    font-family: 'Nunito Sans', 'sans-serif';
+    line-height: 1.5em;
+    overflow-wrap: break-word;
+    padding-bottom: 16px;
+    margin-bottom: 0; /* Add this line to remove the default margin-bottom */
+  }
+  
+  
+  .product-quantity-controls {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .product-quantity-controls button {
+    background-color: #ee6767;
+    border-radius: 5px;
+    color: #fff; /* Changed text color to white for better contrast */
+    padding: 5px;
+    margin: 0 5px;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    display: flex; /* Centering icon or text inside button */
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .product-item-quantity {
+    font-size: 14px;
+    color: #555;
+    width: 10%;
+    text-align: center;
+    border: 1px solid #ccc;
+    height: 35px; /* Adjusted height to match buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .buy-button,
+  .add-to-cart-button {
+    background-color: #3697a6;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 150px;
+  }
+  .buy-button:hover,
+  .add-to-cart-button:hover {
+    background-color: #ee6767; /* Đổi màu khi hover */
+    box-shadow: 0 0 10px rgb(238, 102, 102); /* Hiệu ứng nổi */
+  }
+  .buy-button {
+    margin-right: 10px;
+  }
+  
+  .sold-quantity {
+    margin-top: 20px;
+  }
+ 
+  
+  .product-info p.authors-publisher {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+  }
+  
+  .product-info p.authors-publisher span {
+    flex: 2;
+  }
+  .product-info p.category-quantity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+  }
+  
+  .product-info p.category-quantity span {
+    flex: 2;
+  }
+  
+  .bold-info {
+    font-weight: normal;
+    color: #817878; /* Thay #your-color bằng mã màu bạn mong muốn */
+    /* padding-left: 5px; */
+
+  }
+  .bold-info-price{
+    font-weight: bold;
+    color: #c81010; /* Thay #your-color bằng mã màu bạn mong muốn */
+    font-size: 50px;
+  }
+.bold-info-description {
+  text-indent: 0px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: normal;
+  color: #817878;
+  font-size: 20px;
+  max-width: 100%; /* Đảm bảo không vượt quá chiều rộng */
+  padding: 5px;
+  line-height: 1.5; /* Thiết lập chiều cao dòng để quản lý không gian */
+  max-height: calc(1.5em * 2); /* Giới hạn chiều cao cho 2 dòng */
+
+}
+
+.info-label {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 20px;
+  white-space: nowrap; /* Đảm bảo không xuống dòng */
+  color: #090909 !important;
+  margin-right: 5px;
+}
+.description-container {
+  display: flex;
+  /* align-items: flex-start; */
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+  /*popup báo lỗi*/
+  .error-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff; /* Màu nền của popup */
+    color: #14e98c; /* Màu chữ của popup */
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column; /* Hiển thị các phần tử theo chiều dọc */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .error-popup p {
+    margin-top: 25px;
+    margin-bottom: 10px; /* Khoảng cách giữa nội dung và button */
+  }
+  
+  .error-popup button {
+    background-color: #ee6767;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100px; /* Độ rộng của button */
+  }
+  .wish{
+    width: 40px;
+    height: 40px;
+    margin-left: 20px;
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-color: rgba(255, 255, 255, 0.5); 
+    border: none;
+    position: relative;
+    z-index: 1;
+    top:12px;
+  }
+  .wish:hover{
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    border: none;
+    box-shadow: none;
+    transform: scale(1.1);
+    background-image: url('../icons/wished.png'); 
+  }
+  .book-Relate {
+    display: flex;
+    padding: 20px;
+    width: 90%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    margin: 10px auto;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    
+  }
+  .info-label-review{
+    font-size: 30px;
+    margin-bottom: 5px;
+    max-width: 100%;
+    height: 50px;
+    font-family: 'Nunito Sans', 'sans-serif';
+    line-height: 1.5em;
+    overflow-wrap: break-word;
+    font-weight: bold;
+  }
+  .book-detail {
+    display: flex;
+    padding: 20px;
+    width: 90%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    margin: 10px auto;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  .book-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    /* margin-left: 75px; */
+  }
+  .tabbed-text {
+    flex-basis: 56%; 
+  }
+
+  .info-label-tilte{
+    font-size: 30px;
+    margin-bottom: 5px;
+    max-width: 100%;
+    height: 50px;
+    font-family: 'Nunito Sans', 'sans-serif';
+    line-height: 1.5em;
+    overflow-wrap: break-word;
+    
+  }
+  .book-detail-description{
+    font-style: 'italic';
+    font-family:  'Nunito Sans, sans-serif';
+    line-height: '1.5em';
+    width: max-content;
+  }
+
+  .divider-line {
+    margin-top:20px;
+    border-top: 1px solid #000; 
+    margin-bottom: 15px; 
+  }
+  .review-book{
+    display: flex;
+    padding: 20px;
+    width: 90%;
+    flex-direction: column;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    margin: 10px auto;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  .user-reiview{
+    display: flex;
+    padding: 20px;
+    width: 100%;
+    flex-direction: column;
+  }
+  .info-label-review{
+    font-size: 30px;
+    margin-bottom: 5px;
+    max-width: 100%;
+    height: 50px;
+    font-family: 'Nunito Sans', 'sans-serif';
+    line-height: 1.5em;
+    overflow-wrap: break-word;
+    font-weight: bold;
+  }
+  .username{
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .user-review-item{
+    display: flex;
+    flex-direction: column;
+   
+  }
+  .content-review{
+    font-style: italic;
+    margin-left: 10px;
+  }
+.hide-description{
+  max-height: 150px;
+  overflow-y: hidden;
+  transition: max-height 0.3s ease;
+}
+.visible {
+  max-height: 1000px;
+}
+
+.hidden {
+  max-height: 150px;
+}

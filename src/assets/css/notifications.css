@@ -1,0 +1,70 @@
+.notification-list {
+    margin: 20px;
+  }
+  
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notification-item {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: normal;
+    flex-direction: row;
+    white-space: normal; 
+    word-wrap: break-word;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; 
+
+  }
+  .notification-item.read:hover{
+    background-color: #b9e0d6;
+    transform: scale(1.02);
+  }
+  .notification-item .ant-list-item-meta-title,
+  .notification-item .ant-list-item-meta-description {
+    white-space: normal; /* Đảm bảo nội dung sẽ xuống dòng */
+    word-wrap: break-word; /* Đảm bảo nội dung sẽ xuống dòng khi quá dài */
+  }
+  .notification-item.unread {
+    background-color: rgb(245, 247, 247);
+    transition: background-color 0.3s ease, transform 0.3s ease; 
+
+
+  }
+  .notification-item.unread:hover {
+    background-color: #9dc7bd;
+
+  }
+  
+  .notification-item .ant-list-item-meta-title {
+    font-weight: bold;
+  }
+  
+  .notification-item .ant-btn-link {
+    margin-left: auto;
+  }
+  
+  .default-tag {
+    color: red;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  .button-container .span-more {
+    color: initial; /* Màu ban đầu của nút */
+    transition: color 0.3s;
+  }
+  .button-container {
+    display: flex;
+    align-items: center;
+  }
+  .button-container .span-more:hover {
+    color: red; /* Màu khi hover, thay đổi giá trị này theo ý bạn */
+  }
+  
