@@ -1,0 +1,79 @@
+/* assets/css/dashboard.css */
+.site-layout-background {
+    background: #fff;
+  }
+  
+  .trigger {
+    padding: 0 24px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .logo {
+    height: 32px;
+    margin: 16px;
+    margin-bottom: 30px;
+  }
+  
+  .ant-card {
+    border-radius: 8px;
+  }
+  
+  .card-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.card-value {
+    font-size: 2em;
+    font-weight: bold;
+}
+  .ant-statistic-title {
+    font-size: 24px;
+    font-weight: 500;
+  }
+  
+  @keyframes wave {
+    0% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(15px);
+    }
+    100% {
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+  
+  .blue-gradient {
+    background: linear-gradient(45deg, rgba(30, 60, 114, 0.4), rgba(42, 82, 152, 0.4));
+  }
+  
+  .red-gradient {
+    background: linear-gradient(45deg, rgba(229, 45, 39, 0.4), rgba(179, 18, 23, 0.4));
+  }
+  
+  .green-gradient {
+    background: linear-gradient(45deg, rgba(67, 206, 162, 0.4), rgba(24, 90, 157, 0.4));
+  }
+  
+  .cyan-gradient {
+    background: linear-gradient(45deg, rgba(28, 146, 210, 0.4), rgba(177, 215, 223, 0.4));
+  }
+  
+  .purple-gradient {
+    background: linear-gradient(45deg, rgba(123, 67, 151, 0.4), rgba(220, 36, 48, 0.4));
+  }
+  
+  .orange-gradient {
+    background: linear-gradient(45deg, rgba(255, 126, 95, 0.4), rgba(254, 180, 123, 0.4));
+  }
+  
+  .yellow-gradient {
+    background: linear-gradient(45deg, rgba(247, 151, 30, 0.4), rgba(255, 210, 0, 0.4));
+  }
+  
+  .pink-gradient {
+    background: linear-gradient(45deg, rgba(255, 106, 106, 0.4), rgba(238, 9, 121, 0.4));
+  }

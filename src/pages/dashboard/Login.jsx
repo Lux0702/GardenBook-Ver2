@@ -14,14 +14,14 @@ import {
   UserOutlined,
   LockOutlined,
 } from '@ant-design/icons';
-import { useLogin } from '../../utils/api';
+import { useLoginAdmin } from '../../utils/api';
 import background from '../../assets/images/backGroundLogo.png';
 import backgroundLogin from '../../assets/images/backgroundLogin.jpg';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
 
 const Login = () => {
-  const { fetchLogin } = useLogin();
+  const { fetchLoginAdmin } = useLoginAdmin();
   const [username, setUsername] = useState('');
   const [passWord, setPassword] = useState('');
   const [spinning, setSpinning] = useState(false);
@@ -33,7 +33,7 @@ const Login = () => {
       setErrors({});
       try {
         setSpinning(true);
-        const success = await fetchLogin(username, passWord);
+        const success = await fetchLoginAdmin(username, passWord);
         console.log('success là:', success);
         if (success === true) {
           

@@ -3,14 +3,14 @@ import {useEffect} from 'react'
 import AppRouter from './routers/Router'
 import { useTokenExpirationCheck } from './services/useTokenExpirationCheck';
 function App() {
-  const { isChange, checkTokenExpiration } = useTokenExpirationCheck();
+  const { isChange, checkAllTokenExpirations } = useTokenExpirationCheck();
+
   useEffect(() => {
     // Kiểm tra token khi component được mount
-    checkTokenExpiration();
-
+    checkAllTokenExpirations();
     // Thiết lập interval để kiểm tra token định kỳ 
     const interval = setInterval(() => {
-      checkTokenExpiration();
+      checkAllTokenExpirations();
     }, 1500000); 
 
     return () => clearInterval(interval);

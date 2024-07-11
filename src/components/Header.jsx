@@ -53,6 +53,8 @@ const notifications = ([
   }
 ]);
 const Header = () => {
+  const [paymentHandled, setPaymentHandled] = useState(false);
+
   const [passwordVisible, setPasswordVisible] = React.useState(false);
   const {token, fetchTokenGoogle}= useLoginGoogle()
   const {userData, fetchProfileData}= useProfile()
@@ -161,9 +163,11 @@ const Header = () => {
       }
       if (responseCode && orderID) {
         console.log(`vnp_ResponseCode is: ${responseCode}`);
-          fetchCheckOutPayment()
+          fetchCheckOutPayment();
+          setPaymentHandled(true);
+
       }
-    }, [responseCode]);
+    }, [responseCode, paymentHandled]);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -981,7 +985,7 @@ const Header = () => {
       </div>
       </Modal>
       {contextHolder}
-      <Spin spinning={spinning} fullscreen style={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}} size="large" />
+      <Spin spinning={spinning} fullscreen  size="large" />
       <ToastContainer
       position="top-right"
       autoClose={1000}

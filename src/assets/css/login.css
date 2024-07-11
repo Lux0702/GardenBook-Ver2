@@ -59,7 +59,7 @@
       border: 1px solid #4e4e4ecc;
       padding-left: 15px;
     }
-    .custom-password-input  {
+    :where(.css-dev-only-do-not-override-j9bb5n).ant-input-affix-wrapper >input.ant-input .custom-password-input  {
       width: 410px;
       padding: 8px;
       margin-bottom: 10px;

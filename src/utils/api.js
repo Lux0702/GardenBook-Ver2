@@ -1229,3 +1229,645 @@ export const useEditPost = () => {
 
   return { fetchEditPost }
 }
+
+
+
+/////////////////////////////////////////////////////////////////
+//Admin//
+/////////////////////////////////////////////////////////////////
+// get all user
+export const useGetAllUser = () =>{
+  const [allUser,setAllUser]= useState([])
+  const fetchGetAllUser= async () => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/admin/dashboard/users`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('all user data:',data.data)
+        setAllUser(data.data);
+         return true;
+      } else {
+        console.error('Error fetching all user data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching all user data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {allUser,fetchGetAllUser}
+}
+//blacklist
+export const useGetBlackList = () =>{
+  const [blacklist,setAllUser]= useState([])
+  const fetchGetAllUser= async () => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/admin/blacklist`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('all user data:',data.data)
+        setAllUser(data.data);
+         return true;
+      } else {
+        console.error('Error fetching all user data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching all user data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {blacklist,fetchGetAllUser}
+}
+//Restore  blacklist
+export const useRestoreBlackList = () =>{
+  const fetchRestoreBlackList= async (id) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/admin/blacklist/${id}/restore`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('all user data:',data.message)
+         return true;
+      } else {
+        console.error('Error fetching all user data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching all user data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchRestoreBlackList}
+}
+//login Admin
+export const useLoginAdmin = () => {
+  const [flagLogin, setflag] = useState(false);
+  const fetchLoginAdmin= async (username, passWord) => {
+    try {
+      const response = await fetch(`${API_URL}/api/v1/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: username, passWord }),
+      });
+      const responseData = await response.json();
+      if (responseData.success) {
+        setflag(true);
+        localStorage.setItem('tokenAdmin', JSON.stringify(responseData.data));
+        console.log("Login success", responseData.data);
+        toast.success(responseData.message || 'Đăng nhập thành công');
+        return true; // Đăng nhập thành công
+      } else {
+        console.error('Error login:', response.statusText);
+        toast.info(responseData.message || 'Đăng nhập lỗi');
+        return false; // Đăng nhập thất bại
+      }
+    } catch (error) {
+      console.error('Connect login failed:', error);
+      toast.error('Lỗi kết nối');
+      return false; // Đăng nhập thất bại
+    }
+  };
+
+  return { flagLogin, fetchLoginAdmin };
+};
+
+//add  blacklist
+export const useAddBlackList = () =>{
+  const fetchAddBlackList= async (userId,reason) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/admin/blacklist/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body: JSON.stringify({
+           userId: userId,
+           reason: reason,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('all user data:',data.message)
+         return true;
+      } else {
+        console.error('Error fetching all user data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching all user data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchAddBlackList}
+}
+// get all post for admin
+export const useGetAllPost = () =>{
+  const [allPost,setAllPost]= useState([])
+  const fetchAllPost = async () => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/admin/dashboard/posts`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('post all :',data.data)
+        setAllPost(data.data);
+         return true;
+      } else {
+        console.error('Error fetching post data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching post data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {allPost,fetchAllPost}
+}
+// change status post for admin
+export const useChangeStatusPost = () =>{
+  const fetchChangeStatusPost = async (id,status) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/admin/dashboard/posts/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body: JSON.stringify({
+          status: status,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('post all :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching post data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching post data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchChangeStatusPost}
+}
+// get statistic for admin
+export const useGetStatistic = () =>{
+  const [statistic,setStatistic]= useState([])
+  const fetchGetStatistic = async () => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/admin/statistics`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('statistic all :',data.data)
+        setStatistic(data.data);
+         return true;
+      } else {
+        console.error('Error fetching statistic data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching statistic data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {statistic,fetchGetStatistic}
+}
+
+// delete user for admin
+export const useDeleteUser = () =>{
+  const fetchDeleteUser = async (id) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/admin/dashboard/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('delete  :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching delete data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching delete data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchDeleteUser}
+}
+
+//Register manager 
+export const useRegisterManager = () =>{
+  const fetchRegisterManager = async (fullName,passWord,email,phone,confirmPassWord) => {
+    try 
+    {
+      const tokenString = localStorage.getItem('tokenAdmin')
+      const token = JSON.parse(tokenString)
+      const response = await fetch(`${API_URL}/api/v1/admin/register-manager`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+
+        },
+        body: JSON.stringify({ 
+          fullName: fullName,
+          email: email,
+          phone: phone,
+          passWord: passWord,
+          confirmPassWord:confirmPassWord }),
+      });
+      const responseData = await response.json()
+      if (responseData.success) {
+        toast.success(responseData.message || "Đăng ký thành công")
+        return true;
+      } else {
+        console.error('Error login:', response.statusText);
+        toast.info(responseData.message || "Đăng ký không thành công")
+        return false;
+
+      }   
+    } catch (error) {
+      console.error('Connect register failed:', error);
+      toast.error('Lỗi kết nối')
+      return false;
+
+    }
+    }
+  
+  return  {fetchRegisterManager}
+}
+
+// add author for admin
+export const useAddAuthor = () =>{
+  const fetchAddAuthor = async (authorName) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/authors/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body: JSON.stringify({
+          authorName:authorName,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('delete  :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching delete data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching delete data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchAddAuthor}
+}
+// update author for admin
+export const useUpdateAuthor = () =>{
+  const fetchUpdateAuthor = async (authorName, id) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/authors/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body: JSON.stringify({
+          authorName:authorName,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('delete  :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching delete data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching delete data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchUpdateAuthor}
+}
+
+// add category for admin
+export const useAddCategory = () =>{
+  const fetchAddCategory = async (categoryName) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/categories/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body: JSON.stringify({
+          categoryName:categoryName,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('delete  :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching add data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching add data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchAddCategory}
+}
+// update author for admin
+export const useUpdateCategory = () =>{
+  const fetchUpdateCategory = async (categoryName, id) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/categories/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body: JSON.stringify({
+          categoryName:categoryName,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('delete  :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching delete data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching delete data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchUpdateCategory}
+}
+
+// update cate for admin
+export const useDeleteCategory = () =>{
+  const fetchDeleteCategory = async (id) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/categories/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('delete  :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching delete data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching delete data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchDeleteCategory}
+}
+
+//get all delected book
+export const useDeletedBook = () =>{
+  const [deletedBook, setDeletedBooks] = useState([])
+  const fetchDeletedBook = async () => {
+      try {
+        const tokenString = localStorage.getItem('tokenAdmin')
+        const token = JSON.parse(tokenString)
+        const response = await fetch(`${API_URL}/api/v1/books//deleted`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token?.accessToken}`, 
+          }
+        });
+        if (response.ok) {
+          const book = await response.json()
+          setDeletedBooks(book.data)
+          console.log('Get data success', book.data)
+          return true;
+        } else {
+          console.log('Error fetching books:', response.statusText)
+          return false;
+        }
+      } catch (error) {
+        console.log('Error fetching books data:', error)
+        return false
+      }
+    }
+  
+  return  {deletedBook, fetchDeletedBook}
+}
+
+//add book
+export const useAddBooks = () =>{
+  const fetchAddBooks = async (formData) => {
+    try {
+      const tokenString = localStorage.getItem('tokenAdmin')
+      const token = JSON.parse(tokenString)
+      console.log("Before:",formData)
+      const response = await fetch(`${API_URL}/api/v1/books/add`, {
+        method: 'post',
+        headers: {
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body:formData,
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        console.log('add data:',data.data)
+        return true;
+      } else {
+        console.error('Error fetching add data:', data.data);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error fetching add data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchAddBooks}
+}
+//update book
+export const useUpdateBooks = () =>{
+  const [updateBook, setUpdateBooks] = useState()
+  const fetchUpdateBooks = async (formData,id) => {
+    try {
+      const tokenString = localStorage.getItem('tokenAdmin')
+      const token = JSON.parse(tokenString)
+      console.log("Before:",formData)
+      const response = await fetch(`${API_URL}/api/v1/books/${id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body:formData,
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setUpdateBooks(data.data)
+        console.log('update data:',data.data)
+        return true;
+      } else {
+        console.error('Error fetching update data:', response.statusText);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error fetching update data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {updateBook, fetchUpdateBooks}
+}
+//delete book
+export const useDeleteBooks = () =>{
+  const fetchDeleteBooks = async (id) => {
+    try {
+      const tokenString = localStorage.getItem('tokenAdmin')
+      const token = JSON.parse(tokenString)
+      const response = await fetch(`${API_URL}/api/v1/books/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        console.log('Delete data:',data.data)
+        return true;
+      } else {
+        console.error('Error fetching Delete data:', data.data);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error fetching Delete data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchDeleteBooks}
+}
