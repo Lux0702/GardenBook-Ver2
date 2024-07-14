@@ -778,7 +778,18 @@ const Header = () => {
             <form>
               <label>
                 Tên đăng nhập:
-                <input
+                <Input
+                style={{
+                  width: 410,
+                  padding: '8px ! important',
+                  marginBottom: 10,
+                  boxSizing: 'border-box',
+                  borderRadius: 20,
+                  border: '1px solid #4e4e4ecc',
+                  paddingLeft: 15,
+                  color: 'black',
+                  fontFamily: 'Arial, Helvetica, sans-serif',
+                }}
                   type="email"
                   id="email"
                   name="email"
@@ -791,7 +802,17 @@ const Header = () => {
               <label>
                 Mật khẩu:
                 <Input.Password
-                  className="custom-password-input"
+                style={{
+                  width: 410,
+                  marginBottom: 10,
+                  boxSizing: 'border-box',
+                  borderRadius: 20,
+                  border: '1px solid #4e4e4ecc',
+                  paddingLeft: 15,
+                  color: 'black',
+                  fontFamily: 'Arial, Helvetica, sans-serif',
+                  paddingBottom:0,
+                }}
                   type="password"
                   name="password"
                   id="password"

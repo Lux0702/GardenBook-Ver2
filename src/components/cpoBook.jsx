@@ -3,7 +3,7 @@ import "../assets/css/cpoBook.css";
 import wish from "../assets/icons/wish.svg";
 import { useNavigate } from 'react-router-dom';
 import wished from "../assets/icons/wished.png";
-import { Spin, Rate,Skeleton,Button, Modal,Input } from 'antd';
+import { Spin, Rate,Skeleton,Button, Modal,Input ,Badge} from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import icon_buy from "../assets/icons/Icon_buy.svg";
@@ -115,6 +115,8 @@ const Book = (props) => {
         <div>
             <Skeleton loading={!imageLoaded} active >
                 <div className="container-book" >
+                <Badge.Ribbon text="50%" color="red" style={{zIndex:1000}}>
+
                     <div
                         className="image-container"
                         style={{
@@ -125,7 +127,8 @@ const Book = (props) => {
                             marginRight: '15px',
                         }}
                         loading='lazy'
-                    />
+                    />            </Badge.Ribbon>
+
                     <div className="container-content">
                         <div className="container-text">
                             <h6>{title}</h6>

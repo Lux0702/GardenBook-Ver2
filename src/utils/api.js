@@ -49,11 +49,16 @@ export const useBookDetail = () =>{
           setBooks(book.data)
           //localStorage.setItem('bookData',JSON.stringify(book.data))
           console.log('Get data success', book)
+          return book.data;
+
         } else {
           console.log('Error fetching books:', response.statusText)
+          return false;
+
         }
       } catch (error) {
         console.log('Error fetching books data:', error)
+        return false;
       }
     }
   
@@ -89,6 +94,7 @@ export const useBookRelate = () =>{
 //Categories
 export const useCategories = () =>{
   const [categories, setCategories] = useState([])
+  const[categoriesAll, setCategoriesAll] = useState([])
   const fetchCategories = async () => {
     try {
       const response = await fetch(`${API_URL}/api/v1/categories`);
@@ -100,6 +106,7 @@ export const useCategories = () =>{
             label: category.categoryName,
           })),
         );
+        setCategoriesAll(data.data)
         console.log("data category",data.data)
       } else {
         console.error('Error fetching  data:', response.statusText);
@@ -109,12 +116,14 @@ export const useCategories = () =>{
     }
     }
   
-  return  {categories, fetchCategories}
+  return  {categories,categoriesAll, fetchCategories}
 }
 
 //Authors
 export const useAuthors = () =>{
   const [authors, setAuthors] = useState([])
+  const [authorsAll, setAuthorsAll] = useState([])
+
   const fetchAuthors = async () => {
     try {
       const response = await fetch(`${API_URL}/api/v1/authors`, {
@@ -131,6 +140,7 @@ export const useAuthors = () =>{
             label: author.authorName,
           })),
         );
+        setAuthorsAll(data.data)
         console.log("data author",data.data)
       } else {
         console.error('Error fetching  data:', response.statusText);
@@ -140,7 +150,7 @@ export const useAuthors = () =>{
     }
     }
   
-  return  {authors, fetchAuthors}
+  return  {authors,authorsAll, fetchAuthors}
 }
 //Login Google
 export const useLoginGoogle = () =>{
@@ -1308,7 +1318,7 @@ export const useRestoreBlackList = () =>{
     const token = JSON.parse(tokenString)
     try {
       const response = await fetch(`${API_URL}/api/v1/admin/blacklist/${id}/restore`, {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token?.accessToken}`, 
@@ -1536,7 +1546,7 @@ export const useDeleteUser = () =>{
 
 //Register manager 
 export const useRegisterManager = () =>{
-  const fetchRegisterManager = async (fullName,passWord,email,phone,confirmPassWord) => {
+  const fetchRegisterManager = async (data) => {
     try 
     {
       const tokenString = localStorage.getItem('tokenAdmin')
@@ -1549,19 +1559,19 @@ export const useRegisterManager = () =>{
 
         },
         body: JSON.stringify({ 
-          fullName: fullName,
-          email: email,
-          phone: phone,
-          passWord: passWord,
-          confirmPassWord:confirmPassWord }),
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          passWord: data.passWord,
+          confirmPassWord:data.confirmPassWord }),
       });
       const responseData = await response.json()
       if (responseData.success) {
-        toast.success(responseData.message || "Đăng ký thành công")
+        // toast.success(responseData.message || "Đăng ký thành công")
         return true;
       } else {
-        console.error('Error login:', response.statusText);
-        toast.info(responseData.message || "Đăng ký không thành công")
+        console.error('Error login:', responseData.data);
+        // toast.info(responseData.message || "Đăng ký không thành công")
         return false;
 
       }   
@@ -1713,7 +1723,37 @@ export const useUpdateCategory = () =>{
   
   return  {fetchUpdateCategory}
 }
+// update cate for admin
+export const useDeleteAuthor = () =>{
+  const fetchDeleteAuthor = async (id) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/authors/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('delete  :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching delete data:', data.data);
+        return false;
 
+      }
+    } catch (error) {
+      console.error('Error fetching delete data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchDeleteAuthor}
+}
 // update cate for admin
 export const useDeleteCategory = () =>{
   const fetchDeleteCategory = async (id) => {
@@ -1784,7 +1824,7 @@ export const useAddBooks = () =>{
     try {
       const tokenString = localStorage.getItem('tokenAdmin')
       const token = JSON.parse(tokenString)
-      console.log("Before:",formData)
+      console.log("Before:",...formData)
       const response = await fetch(`${API_URL}/api/v1/books/add`, {
         method: 'post',
         headers: {
@@ -1830,7 +1870,7 @@ export const useUpdateBooks = () =>{
         console.log('update data:',data.data)
         return true;
       } else {
-        console.error('Error fetching update data:', response.statusText);
+        console.error('Error fetching update data:', data.data);
         return false;
       }
     } catch (error) {
@@ -1846,6 +1886,7 @@ export const useUpdateBooks = () =>{
 export const useDeleteBooks = () =>{
   const fetchDeleteBooks = async (id) => {
     try {
+      console.log('Delete data id:',id)
       const tokenString = localStorage.getItem('tokenAdmin')
       const token = JSON.parse(tokenString)
       const response = await fetch(`${API_URL}/api/v1/books/${id}`, {
@@ -1870,4 +1911,211 @@ export const useDeleteBooks = () =>{
   };
   
   return  {fetchDeleteBooks}
+}
+
+// get all order 
+
+export const useGetAllOrder = () =>{
+  const fetchGetOrder = async (page = 1, size = 10) => {
+    const tokenString = localStorage.getItem('tokenAdmin');
+    const token = JSON.parse(tokenString);
+    try {
+      const response = await fetch(`${API_URL}/api/v1/orders?page=${page}&size=${size}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`,
+        }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('all orders data:', data.data.content);
+        return data.data;
+      } else {
+        console.error('Error fetching order data:', data.data);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error fetching order data:', error);
+      return false;
+    }
+  };
+
+  return { fetchGetOrder }
+}
+
+// get change status order 
+export const useUpdateOrderStatus = () =>{
+  const fetchUpdateOrderStatus = async (id,status) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/orders/${id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body: JSON.stringify({
+          status:status,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('update orders data:',data.data)
+        return true
+      } else {
+        console.error('Error update data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching update data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchUpdateOrderStatus}
+}
+
+// get change read notify 
+export const useChangeRead = () =>{
+  const fetchChangeRead = async (id,status) => {
+    const tokenString = localStorage.getItem('token')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/notifications/${id}/read`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body: JSON.stringify({
+          status:status,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('update orders data:',data.data)
+        return true
+      } else {
+        console.error('Error update data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching update data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchChangeRead}
+}
+export const useGetDiscounts = () => {
+  const [discounts, setDiscounts] = useState([]);
+
+  const fetchDiscounts = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/v1/discounts`);
+      if (response.ok) {
+        const data = await response.json();
+        setDiscounts(data);
+      } else {
+        console.error('Error fetching discounts:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching discounts:', error);
+    }
+  };
+
+  return { discounts, fetchDiscounts };
+};
+
+export const useAddDiscount = () => {
+  const addDiscount = async (payload) => {
+    try {
+      const response = await fetch(`${API_URL}/api/v1/discounts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add discount');
+      }
+    } catch (error) {
+      console.error('Error adding discount:', error);
+      throw error;
+    }
+  };
+
+  return { addDiscount };
+};
+
+//get all book
+export const useGetAllDeleteBook = () =>{
+  const [deleteBook, setBooks] = useState([])
+  const fetchGetAllDeleteBook = async () => {
+      try {
+        const tokenString = localStorage.getItem('tokenAdmin')
+        const token = JSON.parse(tokenString)
+        const response = await fetch(`${API_URL}/api/v1/books/deleted`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token?.accessToken}`, 
+          },
+        });
+        if (response.ok) {
+          const book = await response.json()
+          setBooks(book.data)
+          localStorage.setItem('books',JSON.stringify(book.data))
+          console.log('Get data success', book.data)
+          return true;
+        } else {
+          console.log('Error fetching delete books:', response.statusText)
+          return false;
+        }
+      } catch (error) {
+        console.log('Error fetching delete books data:', error)
+        return false
+      }
+    }
+  
+  return  {deleteBook, fetchGetAllDeleteBook}
+}
+
+//Restore  book
+export const useRestoreBook = () =>{
+  const fetchRestoreBook= async (id) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/books/${id}/restore`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('restore data:',data.message)
+         return true;
+      } else {
+        console.error('Error fetching restore book data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching restore book data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchRestoreBook}
 }

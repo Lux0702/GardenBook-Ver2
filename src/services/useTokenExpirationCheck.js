@@ -47,7 +47,7 @@ export const useTokenExpirationCheck = () => {
         const currentTime = Date.now();
         console.log('Expiration time:', expirationTime);
         console.log('Current time:', currentTime);
-        if (expirationTime < currentTime) {
+        if (expirationTime - currentTime <= 60000) {
           console.log(`Refresh ${tokenType}:`, token.refreshToken);
           await refreshAccessToken(token, tokenType);
         } else {

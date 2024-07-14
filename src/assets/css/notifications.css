@@ -27,6 +27,9 @@
     background-color: #b9e0d6;
     transform: scale(1.02);
   }
+  .notification-item.read{
+    background-color: #e3dfdf8c;
+  }
   .notification-item .ant-list-item-meta-title,
   .notification-item .ant-list-item-meta-description {
     white-space: normal; /* Đảm bảo nội dung sẽ xuống dòng */
@@ -62,9 +65,11 @@
   }
   .button-container {
     display: flex;
-    align-items: center;
+    justify-content: flex-end;
   }
+  
   .button-container .span-more:hover {
-    color: red; /* Màu khi hover, thay đổi giá trị này theo ý bạn */
+    color: rgb(161, 65, 65); /* Màu khi hover, thay đổi giá trị này theo ý bạn */
+    text-decoration: underline;
   }
   

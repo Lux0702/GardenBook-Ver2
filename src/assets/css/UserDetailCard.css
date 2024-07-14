@@ -1,0 +1,43 @@
+/* UserDetailCard.css */
+.user-detail-card {
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.user-info {
+  text-align: left;
+}
+
+.user-role-badge {
+  background-color: #1890ff;
+  color: white;
+  margin-left: 10px;
+}
+
+.user-contact {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.user-contact-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.user-contact-item span {
+  margin-left: 10px;
+}
+
+.user-stats {
+  display: flex;
+  justify-content: space-between;
+}

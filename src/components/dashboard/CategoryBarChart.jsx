@@ -4,7 +4,9 @@ import { LineChartOutlined, ShoppingCartOutlined, FileTextOutlined, DatabaseOutl
 import '../../assets/css/dashboard.css';
 
 import { Bar } from 'react-chartjs-2';
+import { Chart, BarElement, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 
+Chart.register(BarElement, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 const getColor = (index) => {
     const colors = [

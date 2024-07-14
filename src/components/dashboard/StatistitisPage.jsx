@@ -36,7 +36,7 @@ const CardItem = ({ title, value, precision, prefixIcon, suffix, className, bord
   </Card>
 );
 
-const DashboardCard = () => {
+const StatistitisPage = () => {
   const { statistic, fetchGetStatistic } = useGetStatistic();
   const [spinning, setSpinning] = useState(false);
   const [chartType, setChartType] = useState('ngày');
@@ -91,20 +91,6 @@ const DashboardCard = () => {
 
   return (
     <>
-      <Row gutter={[16, 16]}>
-        {cardData.slice(0, 4).map((card, index) => (
-          <Col span={6} key={index}>
-            <CardItem {...card} />
-          </Col>
-        ))}
-      </Row>
-      <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
-        {cardData.slice(4).map((card, index) => (
-          <Col span={6} key={index}>
-            <CardItem {...card} />
-          </Col>
-        ))}
-      </Row>
       <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
         <Col span={24}>
           <Card
@@ -146,4 +132,4 @@ const DashboardCard = () => {
   );
 };
 
-export default DashboardCard;
+export default StatistitisPage;
