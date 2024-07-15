@@ -83,13 +83,25 @@ const CartItem = ({ item, onQuantityChange, onRemove, onCheckboxChange }) => {
         )}
       </Col>
       <Col span={2}>
-        {item.book && (
-          <>
-            <span style={{ textDecoration: 'line-through' }}>{formatCurrency(item.book.price)}</span><br />
-            <span>{formatCurrency(200000)}</span><br />
-            <span>Giảm Giá 20%</span>
-          </>
-        )}
+      {item.book && (
+  <>
+          {item.book.discountPercent > 0 ? (
+            <>
+              <span style={{ textDecoration: 'line-through', color: 'red' }}>
+                {formatCurrency(item.book.price)}
+              </span>
+              <br />
+              <span>
+                {formatCurrency(item.book.price - (item.book.price * item.book.discountPercent / 100))}
+              </span>
+              <br />
+            </>
+          ) : (
+            <span>{formatCurrency(item.book.price)}</span>
+          )}
+        </>
+      )}
+
       </Col>
       <Col span={6} className="quantity-col">
         <div className="quantity-control">
@@ -104,9 +116,20 @@ const CartItem = ({ item, onQuantityChange, onRemove, onCheckboxChange }) => {
         </div>
       </Col>
       <Col span={3}>
-        {item.book && (
-          <span>{formatCurrency(item.quantity * item.book.price)}</span>
-        )}
+      {item.book && (
+  <>
+    {item.book.discountPercent > 0 ? (
+      <>
+        <span>
+          {formatCurrency(item.quantity * (item.book.price - (item.book.price * item.book.discountPercent / 100)))}
+        </span>
+      </>
+    ) : (
+      <span>{formatCurrency(item.quantity * item.book.price)}</span>
+    )}
+  </>
+)}
+
       </Col>
       <Col span={2}>
         <Button type="link" onClick={() => onRemove(item._id)} icon={<DeleteOutlined />}>

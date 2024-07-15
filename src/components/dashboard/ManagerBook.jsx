@@ -102,12 +102,14 @@ const ProductList = () => {
       try {
         setSpinning(true);
         await fetchBooks();
+        setSpinning(false);
         await fetchCategories();
         await fetchAuthors();
+
       } catch (error) {
         console.log(error);
       } finally {
-        setSpinning(false);
+        // setSpinning(false);
       }
     };
     fetchData();

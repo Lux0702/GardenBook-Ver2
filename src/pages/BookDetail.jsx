@@ -50,46 +50,7 @@ const BookDetails = () => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-CA')
   }
-  // const handleWishIcon =(product)=>{
-  //   setIsWished(wishlist.find((book)=> book._id === product._id) || '')
-  // }
-  // const fetchBooks = async () => {
-  //   try {
-  //     setSpinning(true);
-  //     const userInfoString = localStorage.getItem("userInfo");
-  //     const userInfo = JSON.parse(userInfoString);
-  //     const token=userInfo.accessToken;
-  //     const response = await fetch(`${API_URL}/customer/wishList`, {
-  //         method: 'GET',
-  //         headers: {
-  //         Authorization: `Bearer ${token}`, 
-  //         'Content-Type': 'application/json',
-  //         },
-  //     });
-  //     if (response.ok) {
-  //       const book = await response.json()
-  //       setWishlist(book.data)
-  //       //localStorage.setItem('bookData',JSON.stringify(book.data))
-  //       //console.log('Get data success', books)
-  //     } else {
-  //       console.error('Error fetching books:', response.statusText)
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching books:', error)
-  //   }finally {
-  //     setSpinning(false);
-  //   }
-  // }
-  // useEffect(() => {
-  //   fetchBooks()
-  // }, [])
 
-  //get relate Book
-// get related
-  // useEffect(() => {
-
-  //   fetchProductRelate();
-  // }, [id]); 
   if (!detailBook || ! productRelate) {
     setSpinning(true)
   }
@@ -149,10 +110,11 @@ const BookDetails = () => {
             <Book
               image={book.image}
               title={book.title}
-              author={book.author}
+              author={book.authors}
               price={book.price}
               _id={book._id}
-              wish_icon={iconWish}
+              discount={book.discountPercent}
+
             />
           </div>
           ))}

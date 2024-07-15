@@ -19,7 +19,7 @@ function loadImage(source) {
     });
   }
 const Book = (props) => {
-    const { image, title, author, price, _id,wish_icon  } = props;
+    const { image, title, author, price, _id,wish_icon,discount  } = props;
     const navigate = useNavigate();
     const [isWished, setIsWished] = useState(false);
     const [iconWish, setIsIconWish] = useState(wish);
@@ -115,8 +115,21 @@ const Book = (props) => {
         <div>
             <Skeleton loading={!imageLoaded} active >
                 <div className="container-book" >
-                <Badge.Ribbon text="50%" color="red" style={{zIndex:1000}}>
-
+                {discount > 0 ? (
+                    <Badge.Ribbon text={`-${discount}%`} color="red" style={{ zIndex: 1000 }}>
+                        <div
+                        className="image-container"
+                        style={{
+                            backgroundImage: imageLoaded ? `url(${image})` : 'none',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            marginRight: '15px',
+                        }}
+                        loading='lazy'
+                    /> 
+                    </Badge.Ribbon>
+                ) : (
                     <div
                         className="image-container"
                         style={{
@@ -127,8 +140,8 @@ const Book = (props) => {
                             marginRight: '15px',
                         }}
                         loading='lazy'
-                    />            </Badge.Ribbon>
-
+                    /> 
+                )}
                     <div className="container-content">
                         <div className="container-text">
                             <h6>{title}</h6>
@@ -148,7 +161,7 @@ const Book = (props) => {
                             
                 
             
-                            <p1>{formatCurrency(price || 0)}</p1>
+                            <p1>{formatCurrency(price - (price * (discount / 100)) || 0)}</p1>
 
                         </div>
                     </div>

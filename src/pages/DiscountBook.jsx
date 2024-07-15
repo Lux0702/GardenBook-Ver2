@@ -8,7 +8,7 @@ import { Pagination, Row, Col, Spin, Breadcrumb, Button, Modal, Divider, Slider 
 import { FaArrowRight } from 'react-icons/fa';
 import Select from 'react-select';
 import { FilterFilled } from '@ant-design/icons';
-import { useDataBook, useAuthors, useCategories } from '../utils/api';
+import { useGetDiscounts, useAuthors, useCategories } from '../utils/api';
 import debounce from 'lodash/debounce';
 import {
   CFormInput,
@@ -18,7 +18,7 @@ import {
 const DiscountBook = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
-  const { dataBook, fetchBooks } = useDataBook();
+  const { discounts, fetchDiscounts } = useGetDiscounts();
   const [currentProducts, setCurrentProducts] = useState([]);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -81,7 +81,7 @@ const DiscountBook = () => {
   }
 },[searchTerm])
   const applyFilters = useCallback(() => {
-    let filtered = currentProducts.length>0?currentProducts: dataBook;
+    let filtered = currentProducts.length>0?currentProducts: discounts;
     console.log("Initial book data currentProducts:", currentProducts);
     console.log("Initial book data:", filtered);
     if (authorFilter && authorFilter.length > 0) {
@@ -111,7 +111,7 @@ const DiscountBook = () => {
     console.log("book filter 3:", filtered);
 
     return filtered;
-  }, [authorFilter, categoryFilter, sliderValue, dataBook, currentProducts]);
+  }, [authorFilter, categoryFilter, sliderValue, discounts, currentProducts]);
 
   const handleOk = () => {
     setLoading(true);
@@ -138,7 +138,7 @@ const DiscountBook = () => {
     const fetchData = async () => {
       try {
         setSpinning(true);
-        await fetchBooks();
+        await fetchDiscounts();
         await fetchAuthors();
         await fetchCategories();
       } catch (error) {
@@ -166,25 +166,25 @@ const DiscountBook = () => {
   },[memoizedCurrentProducts])
   const sortProductsByName = () => {
     setIsSearchKey('');
-    const sorted = [...dataBook].sort((a, b) => a.title.localeCompare(b.title));
+    const sorted = [...discounts].sort((a, b) => a.title.localeCompare(b.title));
     setCurrentProducts(sorted);
   };
 
   const sortProductsByNameDesc = () => {
     setIsSearchKey('');
-    const sorted = [...dataBook].sort((a, b) => b.title.localeCompare(a.title));
+    const sorted = [...discounts].sort((a, b) => b.title.localeCompare(a.title));
     setCurrentProducts(sorted);
   };
 
   const sortProductsByPrice = () => {
     setIsSearchKey('');
-    const sorted = [...dataBook].sort((a, b) => a.price - b.price);
+    const sorted = [...discounts].sort((a, b) => a.price - b.price);
     setCurrentProducts(sorted);
   };
 
   const sortProductsByPriceDesc = () => {
     setIsSearchKey('');
-    const sorted = [...dataBook].sort((a, b) => b.price - a.price);
+    const sorted = [...discounts].sort((a, b) => b.price - a.price);
     setCurrentProducts(sorted);
   };
 
@@ -242,6 +242,8 @@ const DiscountBook = () => {
                       author={product.authors}
                       price={product.price}
                       _id={product._id}
+                      discount={product.discountPercent}
+
                     />
                   </Col>
                 ))}

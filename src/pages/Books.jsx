@@ -242,6 +242,7 @@ const Books = () => {
                       author={product.authors}
                       price={product.price}
                       _id={product._id}
+                      discount={product.discountPercent}
                     />
                   </Col>
                 ))}

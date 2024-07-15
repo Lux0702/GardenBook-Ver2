@@ -22,38 +22,40 @@ import 'react-toastify/dist/ReactToastify.css';
 import { API_URL } from "../utils/constant";
 import '../assets/css/notifications.css';
 import BestSellerList from "./BestSeller";
-const notifications = ([
-  {
-    id: 1,
-    title: "DEAL 0Đ DÀNH RIÊNG Sang",
-    description: "⚡ Cùng ưu đãi Freeship 0Đ mọi đơn hàng 🛒 Chỉ bạn mới có đặc quyền này 🛍️ Mua sắm ngay!",
-    date: "10:00 03-07-2024",
-    isRead: false,
-  },
-  {
-    id: 2,
-    title: "kochinokaro ơi!",
-    description: "👟 \"Giày Jordan Cổ Tháp, Giày...\" chỉ ₫275.000 trong giỏ hàng đang đợi bạn chốt đơn 👉 Mua ngay kẻo hết!",
-    date: "07:00 02-07-2024",
-    isRead: false,
-  },
-  {
-    id: 3,
-    title: "VOUCHER 500K NẠP ĐẦY CHUYẾN CUỐI🔥",
-    description: "🛒Shop mới GIẢM ĐẾN 50% tới bến 🚴‍♀️ Thêm mã FREESHIP muôn nơi 🌞 Deal hời đang đợi, đặt liền bạn ơi!",
-    date: "20:48 01-07-2024",
-    isRead: false,
-  },
-  {
-    id: 4,
-    title: "HÀNG CAO CẤP MUA 1 TẶNG 1🌟",
-    description: "💝 Áp thêm mã giảm 15% quá hời 💛Thêm deal xu hướng giảm giá 15 ngày 🎉 Săn liền máy \"bánh\" ơi!",
-    date: "10:07 01-07-2024",
-    isRead: false,
-  }
-]);
+// 
+
+//   {
+//     id: 1,
+//     title: "DEAL 0Đ DÀNH RIÊNG Sang",
+//     description: "⚡ Cùng ưu đãi Freeship 0Đ mọi đơn hàng 🛒 Chỉ bạn mới có đặc quyền này 🛍️ Mua sắm ngay!",
+//     date: "10:00 03-07-2024",
+//     isRead: false,
+//   },
+//   {
+//     id: 2,
+//     title: "kochinokaro ơi!",
+//     description: "👟 \"Giày Jordan Cổ Tháp, Giày...\" chỉ ₫275.000 trong giỏ hàng đang đợi bạn chốt đơn 👉 Mua ngay kẻo hết!",
+//     date: "07:00 02-07-2024",
+//     isRead: false,
+//   },
+//   {
+//     id: 3,
+//     title: "VOUCHER 500K NẠP ĐẦY CHUYẾN CUỐI🔥",
+//     description: "🛒Shop mới GIẢM ĐẾN 50% tới bến 🚴‍♀️ Thêm mã FREESHIP muôn nơi 🌞 Deal hời đang đợi, đặt liền bạn ơi!",
+//     date: "20:48 01-07-2024",
+//     isRead: false,
+//   },
+//   {
+//     id: 4,
+//     title: "HÀNG CAO CẤP MUA 1 TẶNG 1🌟",
+//     description: "💝 Áp thêm mã giảm 15% quá hời 💛Thêm deal xu hướng giảm giá 15 ngày 🎉 Săn liền máy \"bánh\" ơi!",
+//     date: "10:07 01-07-2024",
+//     isRead: false,
+//   }
+// ]);
 const Header = () => {
   const [paymentHandled, setPaymentHandled] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
   const [passwordVisible, setPasswordVisible] = React.useState(false);
   const {token, fetchTokenGoogle}= useLoginGoogle()
@@ -114,13 +116,13 @@ const Header = () => {
         style={{width:'400px' ,whiteSpace:'normal'}}
         dataSource={notifications.slice(0,4)}
         renderItem={(item) => (
-          <List.Item className={`notification-item ${item.isRead ? 'read' : 'unread'}`} style={{width:'95%'}}
-            onClick={() => handleNotificationClick(item.link)}>
+          <List.Item className={`notification-item ${item.read ? 'read' : 'unread'}`} style={{width:'95%'}}
+            onClick={() => handleNotificationClick(item.url)}>
             <List.Item.Meta
               title={item.title}
               description={
                 <div>
-                  <p>{item.description}</p>
+                  <p>{item.message}</p>
                 </div>
               }
             />
@@ -134,8 +136,36 @@ const Header = () => {
     
   );
   const handleNotificationClick = (item)=>{
-    navigate('/');
+    window.location.href=item;
   }
+  useEffect(() =>{
+    const token = JSON.parse(localStorage.getItem('token') || '""'); 
+    const user = JSON.parse(localStorage.getItem('userInfo') || '""'); 
+
+    if (!token || !user) {
+      console.error('Token hoặc UserId không tồn tại.');
+      return;
+    }
+
+    setSpinning(true);
+    fetch(`${API_URL}/api/v1/notifications`, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token.accessToken,
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setNotifications(
+          (data.data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        );
+         setSpinning(false);
+      })
+      .catch(error => {
+        console.error('Error fetching notifications:', error);
+        setSpinning(false);
+      });
+  },[isLoggedIn])
   // console.log('now:', currentPath);
     // Update userInfo and tokenInfo when localStorage changes
     const handleStorageChange = () => {
@@ -751,7 +781,7 @@ const Header = () => {
                 overlayStyle={{ maxHeight: '200px', maxWidth: '400px', overflowY: 'auto' ,whiteSpace:'normal'}}>
                   
                   <Link className="custom-notification-link">
-                    <Badge count={notifications.length} overflowCount={99} size="small" offset={[-7, 0]} >
+                    <Badge count={notifications?.length} overflowCount={99} size="small" offset={[-7, 0]} >
                       <BellOutlined style={{ marginRight: '2px', fontSize: '20px' ,color: 'white'}} />
                     </Badge>
                     Thông báo</Link> 

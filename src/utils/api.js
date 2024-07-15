@@ -2018,10 +2018,12 @@ export const useGetDiscounts = () => {
 
   const fetchDiscounts = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/discounts`);
+      const response = await fetch(`${API_URL}/api/v1/books/discounts`);
       if (response.ok) {
         const data = await response.json();
-        setDiscounts(data);
+        setDiscounts(data.data);
+        console.error('discount data:', data.data);
+
       } else {
         console.error('Error fetching discounts:', response.statusText);
       }
@@ -2118,4 +2120,72 @@ export const useRestoreBook = () =>{
   };
   
   return  {fetchRestoreBook}
+}
+
+// update cate for admin
+export const useDeleteDiscount = () =>{
+  const fetchDeleteDiscount = async (id) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/books/${id}/discounts`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('delete  :',data.data)
+         return true;
+      } else {
+        console.error('Error fetching delete data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching delete data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchDeleteDiscount}
+}
+
+// update cate for admin
+export const useAddNotification = () =>{
+  const fetchAddNotification = async (title,message) => {
+    const tokenString = localStorage.getItem('tokenAdmin')
+    const token = JSON.parse(tokenString)
+    try {
+      const response = await fetch(`${API_URL}/api/v1/notifications/create-for-all`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+        body:JSON.stringify({
+          title: title,
+          message:message,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('notify  :',data.message)
+         return true;
+      } else {
+        console.error('Error fetching notify data:', data.data);
+        return false;
+
+      }
+    } catch (error) {
+      console.error('Error fetching notify data:', error);
+      return false;
+
+    } 
+  };
+  
+  return  {fetchAddNotification}
 }

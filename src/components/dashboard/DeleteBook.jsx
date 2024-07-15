@@ -94,13 +94,14 @@ const DeleteBook = () => {
     const fetchData = async () => {
       try {
         setSpinning(true);
-        await fetchGetAllDeleteBook();
+        const success = await fetchGetAllDeleteBook();
+        if (success) {setSpinning(false);}
         await fetchCategories();
         await fetchAuthors();
       } catch (error) {
         console.log(error);
       } finally {
-        setSpinning(false);
+        // setSpinning(false);
       }
     };
     fetchData();

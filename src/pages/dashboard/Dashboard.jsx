@@ -76,21 +76,7 @@ const Dashboard = () => {
       key: '1',
       // icon: <UserOutlined />,
       label: (
-        <><Link to="/profile/account" className="link">Thông tin cá nhân</Link></>
-      ),
-    },
-    {
-      key: '2',
-      // icon: 
-      label: (
-        <Link to="/profile/order-history" className="link">Đơn hàng</Link>
-      ),
-    },
-    {
-      key: '5',
-      // icon:<BookOutlined />,
-      label: (
-        <><Link to="/profile/wishList" className="link">Danh sách yêu thích</Link></>
+        <><Link to="#" className="link">Thông tin cá nhân</Link></>
       ),
     },
     {
@@ -132,11 +118,11 @@ const Dashboard = () => {
             onSearch={value => console.log(value)}
           />
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Popover content={notificationsContent} title="Notifications" trigger="click">
+            {/* <Popover content={notificationsContent} title="Notifications" trigger="click">
               <Badge count={5}>
                 <BellOutlined style={{ fontSize: '18px' }} />
               </Badge>
-            </Popover>
+            </Popover> */}
             <Dropdown menu={{items:itemAccount}} trigger={['click']}>
               <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' , marginRight: 50}}>
                 <Avatar icon={<UserOutlined />} />

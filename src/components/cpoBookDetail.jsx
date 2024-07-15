@@ -101,7 +101,7 @@ const addToCart = async () => {
     await fetchAddToCart(token,id,quantity)
   } catch (error) {
     console.error('Error adding to cart:', error);
-    toast.error(error);
+    toast.error('Lỗi thêm vào giỏ hàng');
   }finally {
     setSpinning(false);
   }
@@ -146,7 +146,7 @@ const addToCart = async () => {
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
-      toast.error(error);
+      toast.error("Lỗi thêm sản phẩm");
     }finally {
       setSpinning(false);
     }
@@ -253,7 +253,7 @@ const addToCart = async () => {
           </span>
         </p>
         <p className="category-quantity">
-          <span className="info-label">
+          <span className="info-label" style={{paddingTop:8}}>
             Thể loại: <span className="bold-info">
             {product.categories ? (
                     product.categories.map((category, index) => (
@@ -273,7 +273,19 @@ const addToCart = async () => {
         </p>
         <p>
             <br/>
-            <span className="bold-info-price">{formatCurrency(product.price|| 0)}</span>
+            {console.log('product.discountPercent',product.discountPercent)}
+            <span className="bold-info-price">
+                {product&& product.discountPercent > 0 ? (
+                  <span>
+                    {formatCurrency(product.price - (product.price * (product.discountPercent / 100)) || 0)}{' '}
+                    <span style={{ textDecoration: 'line-through', fontSize:25,color:'black' }}>
+                      {formatCurrency(product.price)}
+                    </span>
+                  </span>
+                ) : (
+                  formatCurrency(product.price || 0)
+                )}
+              </span>
           
         </p>
         <div className="product-quantity-controls">

@@ -42,8 +42,11 @@ const CartComponent = () => {
 
     const selectedItems = cartItems.filter(item => item.checked);
     setSelectedItemsCount(selectedItems.length);
-    const total = selectedItems.reduce((acc, item) => acc + item.quantity * item.book?.price, 0);
-
+    const total = selectedItems.reduce((acc, item) => {
+      const priceAfterDiscount = item.book?.price * (1 - item.book?.discountPercent / 100);
+      return acc + item.quantity * priceAfterDiscount;
+    }, 0);
+    
     // const total = selectedItems.reduce((acc, item) => acc + item.quantity * parseInt(item.discountedPrice.replace('₫', '').replace(/\./g, ''), 10), 0);
     setTotalPrice(`${total.toLocaleString('vi-VN')} ₫`);
     console.log('setCartItems:',cartItems);
@@ -157,7 +160,7 @@ const CartComponent = () => {
           <Button  style={{ marginLeft: '20px' }} onClick={handleCheckout}>Mua Hàng</Button>
         </div>
       </div>
-      <Spin spinning={spinning} fullscreen style={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}} size="large" />
+      <Spin spinning={spinning} fullscreen size="large" />
 
     </div>
   );

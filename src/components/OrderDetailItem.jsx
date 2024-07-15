@@ -76,12 +76,24 @@ const OrderDetailItem = ({ item, data }) => {
           )}
         </Col>
         <Col span={4}>
-          {item.book && (
+        {item.book && (
+  <>
+          {item.book.discountPercent > 0 ? (
             <>
-              <span style={{ textDecoration: 'line-through', color: 'red' }}>{formatCurrency(item.book.price)}</span><br />
-              <span>{formatCurrency(200000)}</span><br />
+              <span style={{ textDecoration: 'line-through', color: 'red' }}>
+                {formatCurrency(item.book.price)}
+              </span>
+              <br />
+              <span>
+                {formatCurrency(item.book.price - (item.book.price * item.book.discountPercent / 100))}
+              </span>
+              <br />
             </>
+          ) : (
+            <span>{formatCurrency(item.book.price)}</span>
           )}
+        </>
+      )}
         </Col>
         <Col span={6} className="quantity-col">
           <div className="quantity-control">
@@ -91,7 +103,15 @@ const OrderDetailItem = ({ item, data }) => {
         </Col>
         <Col span={3} style={{ textAlign: 'right' }}>
           {item.book && (
-            <span>{formatCurrency(item.quantity * item.book.price)}</span>
+             item.book.discountPercent > 0 ? (
+              <>
+                <span>
+                  {formatCurrency(item.quantity * (item.book.price - (item.book.price * item.book.discountPercent / 100)))}
+                </span>
+              </>
+            ) : (
+              <span>{formatCurrency(item.quantity * item.book.price)}</span>
+            )
           )}
         </Col>
       </Skeleton>

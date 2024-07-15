@@ -56,8 +56,8 @@ const UserDetailCard = ({ user }) => {
       {user && (
         <div className="user-stats">
           <div>
-            <h3>{user.points}</h3>
-            <span>Điểm</span>
+            {/* <h3>{user.points}</h3>
+            <span>Điểm</span> */}
           </div>
         </div>
       )}

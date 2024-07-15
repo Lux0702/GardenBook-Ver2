@@ -37,7 +37,11 @@ const OrderComponent = ({dataOrder}) => {
   useEffect(() => {
 
     setSelectedItemsCount(orderItems?.length);
-    const total = orderItems?.reduce((acc, item) => acc + item.quantity * item.book?.price, 0);
+    const total = orderItems.reduce((acc, item) => {
+      const priceAfterDiscount = item.book?.price * (1 - item.book?.discountPercent / 100);
+      return acc + item.quantity * priceAfterDiscount;
+    }, 0);
+    
 
     // const total = selectedItems.reduce((acc, item) => acc + item.quantity * parseInt(item.discountedPrice.replace('₫', '').replace(/\./g, ''), 10), 0);
     setTotalPrice(`${total?.toLocaleString('vi-VN')} ₫`);

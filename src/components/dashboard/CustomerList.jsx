@@ -135,7 +135,8 @@ const CustomerList = () => {
   };
 
   useEffect(() => {
-    const newFilteredData = allUser.filter((item) =>
+    const temp = allUser.filter((item) => item.role ==='Customer')
+    const newFilteredData = temp.filter((item) =>
       item.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.email.toLowerCase().includes(searchTerm.toLowerCase())
     );

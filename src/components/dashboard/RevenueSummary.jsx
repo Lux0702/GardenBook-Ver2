@@ -47,7 +47,7 @@ const RevenueSummary = ({ statistic }) => {
           type="circle"
           percent={(totalRevenue / 10000000) * 100}
           format={(percent) => `${percent.toFixed(0)}%`}
-          width={80}
+          size={80}
           style={{ marginBottom: 20 }}
         />
         <Statistic

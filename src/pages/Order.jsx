@@ -99,6 +99,12 @@ const Order = () => {
     return formattedValue;
 };
 const handleOrder = async()=>{
+  if(!addresses){
+    return toast.warning('Vui lòng nhập thông tin địa chỉ giao hàng')
+  }
+  if(!selectedPaymentMethod || !selectedDelivery){
+    return toast.warning('Vui lòng chọn phương thức thanh toán và phương thức vận chuyển!')
+  }
   const cartItems = orderItems.map((item) => item._id);
   console.log('dia chi:',addresses)
   console.log('dia chi:',cartItems)
@@ -110,9 +116,6 @@ const handleOrder = async()=>{
     totalAmount: totalPrice,
     paymentMethod: selectedPaymentMethod?.value,
   };
-  if(!selectedPaymentMethod || !selectedDelivery){
-    return toast.warning('Vui lòng chọn phương thức thanh toán và phương thức vận chuyển!')
-  }
   try{
     setSpinning(true);
     const success = await  fetchCreateOrder(orderData);
@@ -171,7 +174,8 @@ const handleOrder = async()=>{
             </h3>
           </div>
         </Col>
-        <Skeleton loading={!addresses} active>
+        {addresses ? 
+        <Skeleton loading={!orderItems} active>
         <Col span={22}>
           <span style={{ fontWeight: 'bold' }}>{addresses?.name} </span> 
           <span style={{ marginLeft: '10px' }}>{addresses?.phoneNumber} 
@@ -180,10 +184,21 @@ const handleOrder = async()=>{
         <Col span={2}>
           <Button type='link' onClick={() => setModalOpen(true)}>Thay Đổi</Button>
         </Col>
-        </Skeleton>
         <Col span={24}>
           <span>{addresses?.address}</span>
         </Col>
+        </Skeleton>
+        : 
+          <>
+          <Col span={22}>          
+            <span> Chưa có địa chỉ vui lòng thêm địa chỉ</span>
+          </Col>
+          <Col span={2}>
+          <Button type='link' onClick={() => setModalOpen(true)}>Thay Đổi</Button>
+        </Col></>
+        
+        }
+        
         
       </Row>
     </div>
@@ -210,7 +225,7 @@ const handleOrder = async()=>{
               >
                   <div style={{ border: '1px dashed #ddd', padding: '10px', borderRadius: '5px' }}>
             <Row  style={{ display:'flex', justifyContent:'space-between' }}>
-            <Skeleton loading={!addresses} active>
+            <Skeleton loading={!orderItems} active>
               <Col span={10} style={{ marginLeft: '60px'}} >
               <p style={{color: 'black', fontWeight:'500',fontSize:'20px', fontStyle:"italic"}}>Phương thức thanh toán</p>
                             <Select
@@ -266,7 +281,7 @@ const handleOrder = async()=>{
             </div>
             <div className="right-section" fstyle={{fontSize:'20px'}}>
             <strong style={{fontSize:'20px'}}>Tổng thanh toán ({selectedItemsCount} Sản phẩm): {formatCurrency(totalPrice + (selectedDelivery ? selectedDelivery.value : 0) || 0)}</strong>
-              <Button  style={{ marginLeft: '20px',fontSize:'15px' ,textAlign:'center'}} onClick={handleOrder}>Đặt Hàng</Button>
+              <Button type='default'  style={{ marginLeft: '20px',fontSize:'15px' ,textAlign:'center', background:'#3697A6', color:'black'}} onClick={handleOrder}>Đặt Hàng</Button>
             </div>
         </div>
       </Content>

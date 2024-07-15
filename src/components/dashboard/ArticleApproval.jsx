@@ -97,10 +97,11 @@ const ArticleApproval = () => {
       try {
         setSpinning(true);
         await fetchAllPost();
+        setSpinning(false);
       } catch (error) {
         console.log(error);
       } finally {
-        setSpinning(false);
+        // setSpinning(false);
       }
     };
     fetchData();

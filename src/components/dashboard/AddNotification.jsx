@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Button, List, Spin, message as antdMessage } from 'antd';
+import { useAddNotification } from '../../utils/api';
 
 const { TextArea } = Input;
 
@@ -13,18 +14,22 @@ const NotificationManager = () => {
   const [form] = Form.useForm();
   const [notifications, setNotifications] = useState(fakeNotifications);
   const [spinning, setSpinning] = useState(false);
+  const { fetchAddNotification } = useAddNotification();
 
   const handleAddNotification = async (values) => {
     try {
       setSpinning(true);
-      // Giả lập việc gửi thông báo
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // Thay bằng hàm sendNotification nếu có API thực
-      setNotifications([...notifications, values]);
-      antdMessage.success('Gửi thông báo thành công!');
-      form.resetFields();
+      const success = await fetchAddNotification(values.title, values.message);
+      if (success) {
+        setNotifications([...notifications, values]);
+        antdMessage.success('Gửi thông báo thành công!');
+        form.resetFields();
+      } else {
+        antdMessage.error('Gửi thông báo thất bại!');
+      }
     } catch (error) {
       antdMessage.error('Gửi thông báo thất bại!');
+      
     } finally {
       setSpinning(false);
     }
@@ -65,7 +70,7 @@ const NotificationManager = () => {
           </Form>
         </Spin>
       </Card>
-      <Card title="Danh sách thông báo" style={{ flex: 1 }}>
+      {/* <Card title="Danh sách thông báo" style={{ flex: 1 }}>
         <Spin spinning={spinning}>
           <List
             itemLayout="horizontal"
@@ -80,7 +85,7 @@ const NotificationManager = () => {
             )}
           />
         </Spin>
-      </Card>
+      </Card> */}
     </div>
   );
 };

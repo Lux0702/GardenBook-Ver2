@@ -120,6 +120,8 @@ const OrderList = () => {
           pageSize: size,
           total: response.totalElements,
         });
+        setSpinning(false);
+
         if (isInitialLoad) {
           const allOrdersResponse = await fetchGetOrder(1, response.totalElements);
           if (allOrdersResponse) {
@@ -130,9 +132,7 @@ const OrderList = () => {
       }
     } catch (error) {
       console.log(error);
-    } finally {
-      setSpinning(false);
-    }
+    } 
   };
 
   useEffect(() => {

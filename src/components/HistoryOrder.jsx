@@ -126,7 +126,21 @@ const OrderHistory = ({ orders,onStatusChange }) => {
                   </Col>
                   <Col span={12}>
                     <Text strong>Thành tiền: </Text>
-                    <span style={{ color: 'red', fontSize: '20px', fontWeight: 'bold' }}>{formatCurrency(item.book.price * item.quantity)}</span>
+                    {item.book.discountPercent > 0 ? (
+                        <>
+                     
+                          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                            {formatCurrency(item.quantity * (item.book.price - (item.book.price * item.book.discountPercent / 100)))}
+                            <span style={{ textDecoration: 'line-through', color: 'red', fontSize: '15px', fontWeight: 'bold', marginLeft:3 }}>
+                            {formatCurrency(item.book.price * item.quantity)}
+                          </span>
+                          </span>
+                        </>
+                      ) : (
+                        <span style={{ color: 'red', fontSize: '20px', fontWeight: 'bold' }}>
+                          {formatCurrency(item.book.price * item.quantity)}
+                        </span>
+                      )}
                   </Col>
                 </Row>
               </Col>
