@@ -21,12 +21,12 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setSpinning(true);
+        // setSpinning(true);
         await Promise.all([fetchBooks(), fetchDiscounts(), fetchBestSeller()]);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
-        setSpinning(false);
+        // setSpinning(false);
       }
     };
     fetchData();
@@ -120,7 +120,9 @@ const HomePage = () => {
         </div>
       </div>
       <Footer />
-      <Spin spinning={spinning} fullscreen />
+      {! dataBook || !discounts || !bestSeller ?       
+      <Spin spinning={true} fullscreen /> : ''
+      }
     </div>
   );
 };

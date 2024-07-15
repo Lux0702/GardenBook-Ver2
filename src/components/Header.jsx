@@ -22,37 +22,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { API_URL } from "../utils/constant";
 import '../assets/css/notifications.css';
 import BestSellerList from "./BestSeller";
-// 
 
-//   {
-//     id: 1,
-//     title: "DEAL 0Đ DÀNH RIÊNG Sang",
-//     description: "⚡ Cùng ưu đãi Freeship 0Đ mọi đơn hàng 🛒 Chỉ bạn mới có đặc quyền này 🛍️ Mua sắm ngay!",
-//     date: "10:00 03-07-2024",
-//     isRead: false,
-//   },
-//   {
-//     id: 2,
-//     title: "kochinokaro ơi!",
-//     description: "👟 \"Giày Jordan Cổ Tháp, Giày...\" chỉ ₫275.000 trong giỏ hàng đang đợi bạn chốt đơn 👉 Mua ngay kẻo hết!",
-//     date: "07:00 02-07-2024",
-//     isRead: false,
-//   },
-//   {
-//     id: 3,
-//     title: "VOUCHER 500K NẠP ĐẦY CHUYẾN CUỐI🔥",
-//     description: "🛒Shop mới GIẢM ĐẾN 50% tới bến 🚴‍♀️ Thêm mã FREESHIP muôn nơi 🌞 Deal hời đang đợi, đặt liền bạn ơi!",
-//     date: "20:48 01-07-2024",
-//     isRead: false,
-//   },
-//   {
-//     id: 4,
-//     title: "HÀNG CAO CẤP MUA 1 TẶNG 1🌟",
-//     description: "💝 Áp thêm mã giảm 15% quá hời 💛Thêm deal xu hướng giảm giá 15 ngày 🎉 Săn liền máy \"bánh\" ơi!",
-//     date: "10:07 01-07-2024",
-//     isRead: false,
-//   }
-// ]);
 const Header = () => {
   const [paymentHandled, setPaymentHandled] = useState(false);
   const [notifications, setNotifications] = useState([]);
