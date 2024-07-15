@@ -319,7 +319,9 @@ export const useLogout = () =>{
         localStorage.removeItem("userInfo");
         console.log("Logout google success",responseData.data)
         toast.success(responseData.message || "Đăng xuất thành công")
-        navigate('/login')
+        setTimeout(() => {
+          navigate('/login');
+        }, 1000);
       } else {
         console.error('Error login:', response.statusText);
       }   

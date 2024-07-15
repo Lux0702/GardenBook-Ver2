@@ -6,15 +6,12 @@ import Logo from "../assets/images/logo-home.png";
 import iconSearch from "../assets/icons/search.svg";
 import ic_account from "../assets/icons/account.svg";
 import ic_cart from "../assets/icons/cart.svg";
-import ic_wishlist from "../assets/icons/wishlist.svg";
 import rectangle from "../assets/icons/Rectangle.svg";
-import { API_BASE_URL, DASHBOARD } from "../contexts/Constant";
 import { FaBell, FaForumbee } from "react-icons/fa";
 import {Dropdown, Button, Modal, Spin, Popover,List, Badge,Input } from 'antd';
 import { UserOutlined, LogoutOutlined ,BellOutlined, DeleteOutlined ,BookOutlined,ShoppingCartOutlined,HistoryOutlined , EyeInvisibleOutlined, EyeTwoTone} from '@ant-design/icons';
 import ic_delete from '../assets/icons/x.png';
 import logo from "../assets/images/logo-home.png"
-import facebook from "../assets/icons/bi_facebook.svg"
 import google from "../assets/icons/flat-color-icons_google.svg"
 import { useLoginGoogle, useProfile, useLogin, useLogout, useRegister,useSendOTP ,useSearchList,useCheckOut,useSaveSearch, useDeleteSearch} from "../utils/api";
 import { ToastContainer, toast } from 'react-toastify';
@@ -167,7 +164,7 @@ const Header = () => {
           setPaymentHandled(true);
 
       }
-    }, [responseCode, paymentHandled]);
+    }, []);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -238,23 +235,29 @@ const Header = () => {
 
   const handleLogout = useCallback(async () => {
     try {
-      await fetchLogout(tokenFromStorage);
-      setUserProfile('');
+      const token = JSON.parse(localStorage.getItem('token') || '""');
+      const books = localStorage.getItem('books');
+      const bestSeller = localStorage.getItem('bestSeller');
+      await fetchLogout(token);
       setIsLoggedIn(false);
+      setUserProfile('');
       setIsLoginGoogle(false);
       setUserInfo('');
       setTokenInfo('');
-      localStorage.removeItem("user");
-      localStorage.removeItem("userInfo");
-      localStorage.removeItem("token");
-      localStorage.removeItem("isLoginGoogle");
-      localStorage.removeItem("cartItem");
+      localStorage.clear();
+
+    if (books) {
+      localStorage.setItem('books', books);
+    }
+    if (bestSeller) {
+      localStorage.setItem('bestSeller', bestSeller);
+    }
 
 
     } catch (error) {
       console.log(error);
     } 
-  }, [fetchLogout, tokenFromStorage]);
+  }, [fetchLogout]);
 
   const items = [
     
@@ -417,18 +420,14 @@ const Header = () => {
     const fetchData = async () => {
       console.log("is token google:", token?.accessToken);
       console.log("is token login:", tokenFromStorage?.accessToken);
-      const bookString = localStorage.getItem('bestSeller')
-      const book = JSON.parse(bookString)
-      setBestSeller(book)
       try {
-        if (isTokenFetched) {
-          await fetchProfileData(token?.accessToken);
-          await fetchSearchList(token?.accessToken);
-        } else {
-          if(isLoggedIn)
-            await fetchProfileData(tokenFromStorage?.accessToken);
-            await fetchSearchList(tokenFromStorage?.accessToken);
-
+        const accessToken = isTokenFetched ? token?.accessToken : (isLoggedIn ? tokenFromStorage?.accessToken : null);
+  
+        if (accessToken) {
+          await Promise.all([
+            fetchProfileData(accessToken),
+            fetchSearchList(accessToken)
+          ]);
         }
       } catch (error) {
         console.log('get profile failed:', error);
@@ -436,9 +435,16 @@ const Header = () => {
         setSpinning(false);
       }
     };
-    
+  
     fetchData();
-  }, [isTokenFetched, token,isLoggedIn,tokenFromStorage,reload]);
+  }, [isTokenFetched, token, isLoggedIn, tokenFromStorage, reload]);
+  useEffect(()=>{
+    const bookString = JSON.parse(localStorage.getItem('bestSeller') || '[]');
+    if (bookString) {
+      setBestSeller(bookString);
+    }
+
+  },[])
   const hanldeRemoveSearch = async(item)=> {
     try{
       const success =await fetchDeleteSearch(item)
