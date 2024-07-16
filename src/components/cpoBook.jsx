@@ -113,8 +113,9 @@ const Book = (props) => {
       };
     return (
         <div>
-            <Skeleton loading={!imageLoaded} active >
                 <div className="container-book" >
+                <Skeleton loading={!imageLoaded} active >
+
                 {discount > 0 ? (
                     <Badge.Ribbon text={`-${discount}%`} color="red" style={{ zIndex: 1000 }}>
                         <div
@@ -141,7 +142,25 @@ const Book = (props) => {
                         }}
                         loading='lazy'
                     /> 
-                )}
+                )}         
+                    <div className="background-container">
+                        <button className="show-access-button-1" onClick={handleBookClick}>
+                            <img src={icon_buy} alt="buy" />
+                            <strong style={{ marginLeft: '25px' }}>Chi tiết</strong>
+                        </button>
+                        <button className="show-access-button" onClick={()=>setIsModalOpen(true)}>
+                            <img src={icon_buy1} alt="buy" />
+                            <strong style={{ marginLeft: '15px' }}>Mua hàng</strong>
+                        </button>
+                        <img
+                            className="wishlist"
+                            style={{ width: '40px', height: '40px', marginTop: '10px' }}
+                            id={`wishlist-icon-${_id}`}
+                            src={isWished ? wished : wish}
+                            alt=""
+                            onClick={()=> handleWishChange(_id)}
+                        />
+                    </div></Skeleton>   
                     <div className="container-content">
                         <div className="container-text">
                             <h6>{title}</h6>
@@ -165,26 +184,8 @@ const Book = (props) => {
 
                         </div>
                     </div>
-                    <div className="background-container">
-                        <button className="show-access-button-1" onClick={handleBookClick}>
-                            <img src={icon_buy} alt="buy" />
-                            <strong style={{ marginLeft: '25px' }}>Chi tiết</strong>
-                        </button>
-                        <button className="show-access-button" onClick={()=>setIsModalOpen(true)}>
-                            <img src={icon_buy1} alt="buy" />
-                            <strong style={{ marginLeft: '15px' }}>Mua hàng</strong>
-                        </button>
-                        <img
-                            className="wishlist"
-                            style={{ width: '40px', height: '40px', marginTop: '10px' }}
-                            id={`wishlist-icon-${_id}`}
-                            src={isWished ? wished : wish}
-                            alt=""
-                            onClick={()=> handleWishChange(_id)}
-                        />
-                    </div>
+                    
                 </div>
-            </Skeleton>
 
             <Spin spinning={spinning} fullscreen />
             <Modal title="Số lượng sản phảm" open={isModalOpen} onOk={null} onCancel={handleCancel}  

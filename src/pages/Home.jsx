@@ -8,12 +8,15 @@ import '../assets/css/home.css';
 import Book from '../components/cpoBook';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { useDataBook, useBestSeller, useGetDiscounts } from '../utils/api';
+import { useDataBook, useBestSeller, useGetDiscounts, useCategories,useAuthors } from '../utils/api';
 
 const HomePage = () => {
   const { dataBook, fetchBooks } = useDataBook();
   const { discounts, fetchDiscounts } = useGetDiscounts();
   const { bestSeller, fetchBestSeller } = useBestSeller();
+  const { fetchCategories } = useCategories();
+  const { fetchAuthors } = useAuthors();
+
   const navigate = useNavigate();
   const [spinning, setSpinning] = useState(false);
   const [iconWish, setIsIconWish] = useState(false);
@@ -22,7 +25,7 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
         // setSpinning(true);
-        await Promise.all([fetchBooks(), fetchDiscounts(), fetchBestSeller()]);
+        await Promise.all([fetchBooks(), fetchDiscounts(), fetchBestSeller(),fetchCategories(),fetchAuthors()]);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -120,7 +123,7 @@ const HomePage = () => {
         </div>
       </div>
       <Footer />
-      {! dataBook || !discounts || !bestSeller ?       
+      { dataBook.length===0 || discounts.length===0 || bestSeller.length===0 ?       
       <Spin spinning={true} fullscreen /> : ''
       }
     </div>

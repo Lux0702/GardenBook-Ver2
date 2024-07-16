@@ -20,7 +20,7 @@ export const useDataBook = () =>{
             setBooks(book.data)
             localStorage.setItem('books',JSON.stringify(book.data))
             console.log('Get data success', book.data)
-            return true;
+            return book.data;
           } else {
             console.log('Error fetching books:', response.statusText)
             return false;
@@ -100,12 +100,12 @@ export const useCategories = () =>{
       const response = await fetch(`${API_URL}/api/v1/categories`);
       if (response.ok) {
         const data = await response.json();
-        setCategories(
-          data.data.map((category) => ({
-            value: category.id,
-            label: category.categoryName,
-          })),
-        );
+        const tmp =data.data.map((category) => ({
+          value: category.id,
+          label: category.categoryName,
+        }))
+        setCategories(tmp);
+        localStorage.setItem('categories',JSON.stringify(tmp))
         setCategoriesAll(data.data)
         console.log("data category",data.data)
       } else {
@@ -116,7 +116,7 @@ export const useCategories = () =>{
     }
     }
   
-  return  {categories,categoriesAll, fetchCategories}
+  return  {categories,setCategories,categoriesAll, fetchCategories}
 }
 
 //Authors
@@ -134,12 +134,12 @@ export const useAuthors = () =>{
       });
       if (response.ok) {
         const data = await response.json();
-        setAuthors(
-          data.data.map((author) => ({
-            value: author.id,
-            label: author.authorName,
-          })),
-        );
+        const tmp =data.data.map((author) => ({
+          value: author.id,
+          label: author.authorName,
+        }));
+        setAuthors(tmp);
+        localStorage.setItem('authors',JSON.stringify(tmp))
         setAuthorsAll(data.data)
         console.log("data author",data.data)
       } else {
@@ -150,7 +150,7 @@ export const useAuthors = () =>{
     }
     }
   
-  return  {authors,authorsAll, fetchAuthors}
+  return  {authors,setAuthors,authorsAll, fetchAuthors}
 }
 //Login Google
 export const useLoginGoogle = () =>{
