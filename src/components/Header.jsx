@@ -14,7 +14,7 @@ import ic_delete from '../assets/icons/x.png';
 import logo from "../assets/images/logo-home.png"
 import google from "../assets/icons/flat-color-icons_google.svg"
 import { useLoginGoogle, useProfile, useLogin, useLogout, useRegister,useSendOTP ,useSearchList,useCheckOut,useSaveSearch, useDeleteSearch} from "../utils/api";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, collapseToast, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_URL } from "../utils/constant";
 import '../assets/css/notifications.css';
@@ -109,12 +109,11 @@ const Header = () => {
     const token = JSON.parse(localStorage.getItem('token') || '""'); 
     const user = JSON.parse(localStorage.getItem('userInfo') || '""'); 
 
-    if (!token || !user) {
+    if (!token || !user ) {
       console.error('Token hoặc UserId không tồn tại.');
       return;
     }
 
-    setSpinning(true);
     fetch(`${API_URL}/api/v1/notifications`, {
       method: 'GET',
       headers: {
@@ -126,11 +125,9 @@ const Header = () => {
         setNotifications(
           (data.data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         );
-         setSpinning(false);
       })
       .catch(error => {
         console.error('Error fetching notifications:', error);
-        setSpinning(false);
       });
   },[isLoggedIn])
   // console.log('now:', currentPath);
@@ -147,6 +144,7 @@ const Header = () => {
       const orderID = JSON.parse(orderIDString)
       const fetchCheckOutPayment = async() => {
         try{
+          console.log("orderID,responseCode",orderID,responseCode)
           const success = await fetchCheckOut(orderID,responseCode)
           if (success){
             localStorage.removeItem('orderID');
@@ -155,7 +153,9 @@ const Header = () => {
             toast.error('Thanh toán thất bại');
           }
         }catch(error){
-          console.log(error);
+          console.log(error); 
+          toast.error('Thanh toán thất bại');
+
         }
       }
       if (responseCode && orderID) {
@@ -276,7 +276,7 @@ const Header = () => {
       ),
     },
     {
-      key: '5',
+      key: '3',
       icon:<BookOutlined />,
       label: (
         <><Link to="/profile/wishList" className="link">Danh sách yêu thích</Link></>
@@ -416,6 +416,7 @@ const Header = () => {
 
     checkLoginGoogle();
   }, [isLoginGoogle, isTokenFetched, codeTemp]);
+
   useEffect(() => {
     const fetchData = async () => {
       console.log("is token google:", token?.accessToken);
@@ -444,7 +445,7 @@ const Header = () => {
       setBestSeller(bookString);
     }
 
-  },[])
+  },[spinning])
   const hanldeRemoveSearch = async(item)=> {
     try{
       const success =await fetchDeleteSearch(item)

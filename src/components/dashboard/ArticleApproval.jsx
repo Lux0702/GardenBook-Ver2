@@ -96,7 +96,7 @@ const ArticleApproval = () => {
     const fetchData = async () => {
       try {
         setSpinning(true);
-        await fetchAllPost();
+        await fetchAllPost();   
         setSpinning(false);
       } catch (error) {
         console.log(error);

@@ -10,8 +10,8 @@ const { TextArea } = Input;
 
 const AddProduct = ({ onAddProduct }) => {
   const [form] = Form.useForm();
-  const { categories, fetchCategories } = useCategories();
-  const { authors, fetchAuthors } = useAuthors();
+  const { categories,setCategories, fetchCategories } = useCategories();
+  const { authors, setAuthors,fetchAuthors } = useAuthors();
   const [spinning, setSpinning] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
@@ -21,15 +21,23 @@ const AddProduct = ({ onAddProduct }) => {
     const fetchData = async () => {
       try {
         setSpinning(true);
-        await fetchCategories();
-        await fetchAuthors();
+        await Promise.all([fetchCategories(),fetchAuthors()])
       } catch (error) {
         console.log(error);
       } finally {
         setSpinning(false);
       }
     };
-    fetchData();
+    const storedAuthors = localStorage.getItem('authors');
+    const storedCategories = localStorage.getItem('categories');
+
+    if ( storedAuthors && storedCategories) {
+      setAuthors(JSON.parse(storedAuthors));
+      setCategories(JSON.parse(storedCategories));
+    }
+    else{
+      fetchData();
+    }
   }, []);
 
   const handleAddProduct = async (values) => {

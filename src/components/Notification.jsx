@@ -43,29 +43,29 @@ const NotificationList = () => {
         setSpinning(false);
       });
 
-      const socket = new SockJS('/ws'); //`${API_URL}/ws`
-      const client = Stomp.over(socket);
+      // const socket = new SockJS('/ws'); //`${API_URL}/ws`
+      // const client = Stomp.over(socket);
   
-      client.connect({}, (frame) => {
-        console.log('Connected: ' + frame);
+      // client.connect({}, (frame) => {
+      //   console.log('Connected: ' + frame);
   
-        // Subscribe to notifications channel
-        client.subscribe('/topic/notifications/' + user.userId, (notification) => {
-          setNotifications(prevNotifications => {
-            const newNotifications = [...prevNotifications, JSON.parse(notification.body)];
-            return newNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          });
-        });
+      //   // Subscribe to notifications channel
+      //   client.subscribe('/topic/notifications/' + user.userId, (notification) => {
+      //     setNotifications(prevNotifications => {
+      //       const newNotifications = [...prevNotifications, JSON.parse(notification.body)];
+      //       return newNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      //     });
+      //   });
   
-        setStompClient(client); // Save the client to state
-      });
+      //   setStompClient(client); // Save the client to state
+      // });
   
-      // Cleanup on component unmount
-      return () => {
-        if (stompClient) {
-          stompClient.disconnect();
-        }
-      };
+      // // Cleanup on component unmount
+      // return () => {
+      //   if (stompClient) {
+      //     stompClient.disconnect();
+      //   }
+      // };
   }, [stompClient]);
 
   const handlePageChange = (page) => {

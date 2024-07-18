@@ -31,7 +31,7 @@ export const useDataBook = () =>{
         }
       }
     
-    return  {dataBook, fetchBooks}
+    return  {dataBook,setBooks, fetchBooks}
 }
 //Detail book
 export const useBookDetail = () =>{
@@ -106,6 +106,8 @@ export const useCategories = () =>{
         }))
         setCategories(tmp);
         localStorage.setItem('categories',JSON.stringify(tmp))
+        localStorage.setItem('categoriesAll',JSON.stringify(data.data))
+
         setCategoriesAll(data.data)
         console.log("data category",data.data)
       } else {
@@ -116,7 +118,7 @@ export const useCategories = () =>{
     }
     }
   
-  return  {categories,setCategories,categoriesAll, fetchCategories}
+  return  {categories,setCategories,categoriesAll,setCategoriesAll, fetchCategories}
 }
 
 //Authors
@@ -141,6 +143,7 @@ export const useAuthors = () =>{
         setAuthors(tmp);
         localStorage.setItem('authors',JSON.stringify(tmp))
         setAuthorsAll(data.data)
+        localStorage.setItem('authorsAll',JSON.stringify(data.data))
         console.log("data author",data.data)
       } else {
         console.error('Error fetching  data:', response.statusText);
@@ -150,7 +153,7 @@ export const useAuthors = () =>{
     }
     }
   
-  return  {authors,setAuthors,authorsAll, fetchAuthors}
+  return  {authors,setAuthors,authorsAll,setAuthorsAll, fetchAuthors}
 }
 //Login Google
 export const useLoginGoogle = () =>{
@@ -349,7 +352,7 @@ export const useProfile = () =>{
       if (response.ok) {
         const data = await response.json();
         setUserData(data.data)
-        localStorage.setItem("userInfo", JSON.stringify(data.data));
+          localStorage.setItem("userInfo", JSON.stringify(data.data));
 
         console.log('user data:',data.data)
       } else {
@@ -360,9 +363,36 @@ export const useProfile = () =>{
     } 
   };
   
-  return  {userData, fetchProfileData}
+  return  {userData,setUserData, fetchProfileData}
 }
+export const useProfileAdmin = () =>{
+  const [userData, setUserDataAdmin] = useState()
+  const fetchProfileDataAdmin = async (token) => {
+    try {
+      const response = await fetch(`${API_URL}/api/v1/user/profile`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, 
+        },
+      });
 
+      if (response.ok) {
+        const data = await response.json();
+        setUserDataAdmin(data.data)
+          localStorage.setItem("AdminInfo", JSON.stringify(data.data));
+
+        console.log('user data:',data.data)
+      } else {
+        console.error('Error fetching profile data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+    } 
+  };
+  
+  return  {userData,setUserDataAdmin, fetchProfileDataAdmin}
+}
 //add to cart
 export const useAddToCart = () =>{
   const fetchAddToCart = async (token,id,quantity) => {
@@ -915,7 +945,7 @@ export const useSearchList = () =>{
 
 //get best seller book
 export const useBestSeller = () =>{
-  const [bestSeller, setBooks] = useState([])
+  const [bestSeller, setBestSeller] = useState([])
   const fetchBestSeller = async () => {
       try {
         const response = await fetch(`${API_URL}/api/v1/books/best-seller`, {
@@ -926,7 +956,7 @@ export const useBestSeller = () =>{
         });
         if (response.ok) {
           const book = await response.json()
-          setBooks(book.data)
+          setBestSeller(book.data)
           //localStorage.setItem('bookData',JSON.stringify(book.data))
           console.log('Get data best seller success', book.data)
           localStorage.setItem('bestSeller',JSON.stringify(book.data))
@@ -941,7 +971,7 @@ export const useBestSeller = () =>{
       }
     }
   
-  return  {bestSeller, fetchBestSeller}
+  return  {bestSeller, setBestSeller,fetchBestSeller}
 }
 
 //Get all cartItem
@@ -1111,7 +1141,7 @@ export const useDataPost = () =>{
 
 //get recommend
 export const useRecommendBook = () =>{
-  const [recommendBook, setBooks] = useState([])
+  const [recommendBook, setRecommendBook] = useState([])
   const fetchRecommendBook = async () => {
       try {
         const tokenString = localStorage.getItem('token');
@@ -1125,8 +1155,8 @@ export const useRecommendBook = () =>{
         });
         if (response.ok) {
           const post = await response.json()
-          setBooks(post)
-          // localStorage.setItem('post',JSON.stringify(post.data))
+          setRecommendBook(post)
+          localStorage.setItem('recommendBook',JSON.stringify(post))
           console.log('Get recommend success', post)
           return true;
         } else {
@@ -1139,7 +1169,7 @@ export const useRecommendBook = () =>{
       }
     }
   
-  return  {recommendBook, fetchRecommendBook}
+  return  {recommendBook,setRecommendBook, fetchRecommendBook}
 }
 
 //add post
@@ -2024,6 +2054,7 @@ export const useGetDiscounts = () => {
       if (response.ok) {
         const data = await response.json();
         setDiscounts(data.data);
+        localStorage.setItem('discounts',JSON.stringify(data.data))
         console.error('discount data:', data.data);
 
       } else {
@@ -2034,7 +2065,7 @@ export const useGetDiscounts = () => {
     }
   };
 
-  return { discounts, fetchDiscounts };
+  return { discounts, setDiscounts,fetchDiscounts };
 };
 
 export const useAddDiscount = () => {
@@ -2076,7 +2107,7 @@ export const useGetAllDeleteBook = () =>{
         if (response.ok) {
           const book = await response.json()
           setBooks(book.data)
-          localStorage.setItem('books',JSON.stringify(book.data))
+          // localStorage.setItem('books',JSON.stringify(book.data))
           console.log('Get data success', book.data)
           return true;
         } else {
@@ -2190,4 +2221,90 @@ export const useAddNotification = () =>{
   };
   
   return  {fetchAddNotification}
+}
+
+//get all book
+export const useTopOrder = () =>{
+  const [topCustomers, settopCustomers] = useState([])
+  const fetchTopCustomers = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/v1/customer/top-order`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        if (response.ok) {
+          const book = await response.json()
+          settopCustomers(book.data)
+          console.log('Get data success', book.data)
+          return book.data;
+        } else {
+          console.log('Error fetching books:', response.statusText)
+          return false;
+        }
+      } catch (error) {
+        console.log('Error fetching books data:', error)
+        return false
+      }
+    }
+  
+  return  {topCustomers, fetchTopCustomers}
+}
+export const useLogoutAdmin = () =>{
+  const fetchLogoutAdmin = async (token) => {
+    try 
+    {
+      const response = await fetch(`${API_URL}/api/v1/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token.accessToken}`, 
+        },
+        body: JSON.stringify({ refreshToken: token.refreshToken }),
+      });
+      const responseData = await response.json()
+      if (responseData.success) {
+        toast.success(responseData.message || "Đăng xuất thành công")
+        localStorage.removeItem('AdminToken')
+        localStorage.removeItem('AdminInfo');
+        window.location.href = '/adminlogin';
+        console.log("Logout  success",responseData.data)
+      } else {
+        console.error('Error login:', responseData.data);
+      }   
+    } catch (error) {
+      console.error('Connect login failed:', error);
+    }
+    }
+  
+  return  { fetchLogoutAdmin}
+}
+//CONFIMED
+export const useConfirmedOrder = () =>{
+  const fetchConfirmedOrder = async (id) => {
+    try {
+      const token = JSON.parse(localStorage.getItem('token')|| '""')
+      const response = await fetch(`${API_URL}/api/v1/customer/orders/${id}/confirm-received`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('user data:',data.data)
+        return true;
+      } else {
+        console.error('Error fetching profile data:', response.statusText);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+      return false;
+    } 
+  };
+  
+  return  { fetchConfirmedOrder}
 }

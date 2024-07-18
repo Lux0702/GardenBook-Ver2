@@ -3,7 +3,7 @@ import {useEffect} from 'react'
 import AppRouter from './routers/Router'
 import { useTokenExpirationCheck } from './services/useTokenExpirationCheck';
 
-
+import 'antd/dist/reset.css';
 function App() {
   const { isChange, checkAllTokenExpirations } = useTokenExpirationCheck();
   const user = JSON.parse(localStorage.getItem('userInfo') || '""');

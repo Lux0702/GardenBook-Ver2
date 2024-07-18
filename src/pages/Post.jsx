@@ -75,29 +75,16 @@ const Post = () => {
     navigate(selectedItem.path); 
   };
   
-  // useEffect(()=>{
-  //   const fetchData = async()=>{
-  //     try{
-  //       setSpinning(true)
-  //       await fetchRecommendBook();
-  //     } catch(error){
-  //       console.log(error);
-  //     }finally{setSpinning(false)}
-  //   }
-  //   fetchData();
-  // },[])
   useEffect(() => {
     const intervalId = setInterval(() => {
       const storedUser = JSON.parse(localStorage.getItem('userInfo') || 'null');
       
       const fetchRecommendData = async () => {
         try {
-          setSpinning(true);
           await fetchRecommendBook();
         } catch (error) {
           console.log(error);
         } finally {
-          setSpinning(false);
         }
       };
 

@@ -20,7 +20,9 @@ const RevenueSummary = ({ statistic }) => {
 
   const revenueToday = getRevenueByDate(today);
   const revenueLastDay = getRevenueByDate(yesterday);
-  const revenueChange = ((revenueToday - revenueLastDay) / (revenueLastDay || 1)) * 100;
+  const revenueChange = revenueLastDay 
+  ? ((revenueToday - revenueLastDay) / revenueLastDay) * 100 
+  : 0;
 
   const onDateChange = (dates) => {
     setDateRange(dates);
@@ -39,13 +41,13 @@ const RevenueSummary = ({ statistic }) => {
 
     return total;
   };
-
+  const totalRevenueInRange = getTotalRevenueInRange();
   return (
     <ConfigProvider locale={viVN}>
       <Card style={{ textAlign: 'center' }}>
         <Progress
           type="circle"
-          percent={(totalRevenue / 10000000) * 100}
+          percent={totalRevenueInRange ? (totalRevenueInRange/totalRevenue) * 100 : 100}
           format={(percent) => `${percent.toFixed(0)}%`}
           size={80}
           style={{ marginBottom: 20 }}
@@ -88,7 +90,7 @@ const RevenueSummary = ({ statistic }) => {
           <Col span={24}>
             <Statistic
               title="Doanh thu trong khoảng"
-              value={getTotalRevenueInRange()}
+              value={totalRevenueInRange}
               precision={0}
               suffix='VNĐ'
             />

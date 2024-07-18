@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { LaptopOutlined, NotificationOutlined, UserOutlined, HeartOutlined } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Layout, Menu, Spin, theme } from 'antd';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import UserInfo from '../components/userInfo';
-import ChangePassWord from '../components/ChangePassWord';
-import AddressManager from '../components/AddressManager';
-import NotificationList from '../components/Notification';
-import HistoryOrderList from '../components/HistoryListOrder';
+
+// Sử dụng React.lazy để tải lười biếng các component
+const UserInfo = lazy(() => import('../components/userInfo'));
+const ChangePassWord = lazy(() => import('../components/ChangePassWord'));
+const AddressManager = lazy(() => import('../components/AddressManager'));
+const NotificationList = lazy(() => import('../components/Notification'));
+const HistoryOrderList = lazy(() => import('../components/HistoryListOrder'));
+
 const { Content, Sider } = Layout;
 
 const items = [
@@ -187,7 +190,9 @@ const UserAccount = () => {
                 minHeight: 'calc(100vh - 200px)'
               }}
             >
-              {selectedComponent}
+              <Suspense>
+                {selectedComponent}
+              </Suspense>
             </Content>
           </Layout>
         </div>

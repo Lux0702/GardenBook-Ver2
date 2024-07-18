@@ -7,7 +7,7 @@ import background from '../../assets/images/backGroundLogo.png';
 import backgroundLogin from '../../assets/images/backgroundLogin.jpg';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
-
+import '../../assets/css/login.css'
 const Login = () => {
   const { fetchLoginAdmin } = useLoginAdmin();
   const [username, setUsername] = useState('');
@@ -56,14 +56,16 @@ const Login = () => {
 
   return (
     <div
-      className="min-vh-100 d-flex justify-content-center align-items-center"
+      className="login-container"
       style={{
         backgroundImage: `url(${background})`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
+        minHeight: '100% ! important',
       }}
-    >
+    >   
+    {/* <Spin spinning={spinning} fullscreen> */}
       <Card
         style={{
           width: 400,
@@ -105,19 +107,19 @@ const Login = () => {
           </Form.Item>
           <Row justify="space-between">
             <Col>
-              <Button type="primary" onClick={handleLogin}>
+              <Button type="primary" onClick={handleLogin} style={{backgroundColor:'#3697A6'}} loading={spinning}>
                 Đăng nhập
               </Button>
             </Col>
             <Col>
-              <Link to="/forgot-password">
-                <Button type="text">Forgot password?</Button>
-              </Link>
+              {/* <Link to="/forgot-password">
+                <Button type='primary' ></Button>
+              </Link> */}
             </Col>
           </Row>
         </Form>
       </Card>
-      <Spin spinning={spinning} />
+      {/* </Spin> */}
       <ToastContainer
         position="top-right"
         autoClose={1000}

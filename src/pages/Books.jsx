@@ -28,7 +28,7 @@ const Books = () => {
   // const [filteredBooks, setFilteredBooks] = useState([]);
   const [spinning, setSpinning] = useState(false);
   const [sliderValue, setSliderValue] = useState([0, 5000000]);
-  const { authors,setAuthors, fetchAuthors } = useAuthors();
+  const { authors,setAuthors, fetchAuthors } = useAuthors(); 
   const { categories,setCategories, fetchCategories } = useCategories();
   const [categoryFilter, setCategoryFilter] = useState([]);
   const [filterData, setFilterData] = useState([]);

@@ -6,7 +6,7 @@ const { Panel } = Collapse;
 const { Search } = Input;
 const CategoryList = () => {
   const [form] = Form.useForm();
-  const { categoriesAll, fetchCategories } = useCategories();
+  const { categoriesAll, setCategoriesAll,fetchCategories } = useCategories();
   const { fetchUpdateCategory } = useUpdateCategory();
   const { fetchAddCategory } = useAddCategory();
   const { fetchDeleteCategory } = useDeleteCategory();
@@ -31,7 +31,12 @@ const CategoryList = () => {
         setSpinning(false);
       }
     };
-    fetchData();
+    const storedCategories = localStorage.getItem('categoriesAll');
+    if (storedCategories){
+      setCategoriesAll(JSON.parse(storedCategories))
+    }else{
+      fetchData();
+    }
   }, [loading]);
 
   const handleAddCategory = () => {

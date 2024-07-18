@@ -13,7 +13,18 @@
     margin-bottom: 50px;
   
 } */
-  
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.login-container {
+  min-height: 100vh; /* Sử dụng 100vh để đảm bảo chiều cao tối thiểu của toàn màn hình */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+}
   .login {
     max-width: 450px;
     position: relative;

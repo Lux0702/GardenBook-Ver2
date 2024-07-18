@@ -7,7 +7,7 @@ import { API_URL } from "../utils/constant";
 import { useParams } from 'react-router-dom';
 import wish from "../assets/icons/wish.svg"
 import wished from "../assets/icons/wished.png"
-import {  Spin,Rate } from 'antd'
+import {  Spin,Rate, Skeleton } from 'antd'
 import { useNavigate } from 'react-router-dom';
 import { useAddToCart, useAddToWishList } from '../utils/api';
 //popup hiện error
@@ -228,90 +228,92 @@ const addToCart = async () => {
   };
   return (
     <div className="product-detail">
-      <img src={product.image} alt={product.title} />  
-      <div className="product-info">
-        <h2>{product.title}</h2>
-        <p><span className="bold-info-description"> <span className="info-label">Mô tả:</span>{product.description}</span>
-        </p>
-        <p className="authors-publisher">
-          <span className="info-label">
-            Tác giả: <span className="bold-info">
-            {product.authors ? (
-                    product.authors.map((authors, index) => (
-                      <span key={index}>
-                        {index > 0 && ", "} 
-                        {authors.authorName}
-                      </span>
-                    ))
-                  ) : (
-                    <span>Không có tác giả</span>
-                  )}
-            </span>
-           </span>
-          <span className='info-label'>
-            Nhà xuất bản: <span className="bold-info">{product.publisher}</span>
-          </span>
-        </p>
-        <p className="category-quantity">
-          <span className="info-label" style={{paddingTop:8}}>
-            Thể loại: <span className="bold-info">
-            {product.categories ? (
-                    product.categories.map((category, index) => (
-                      <span key={index}>
-                        {index > 0 && ", "} 
-                        {category.categoryName}
-                      </span>
-                    ))
-                  ) : (
-                    <span>Không có thể loại</span>
-                  )}
-            </span>
-          </span>
-          <span className="info-label">
-            Đã bán: <span className="bold-info">{product.soldQuantity}</span>
-          </span>
-        </p>
-        <p>
-            <br/>
-            {console.log('product.discountPercent',product.discountPercent)}
-            <span className="bold-info-price">
-                {product&& product.discountPercent > 0 ? (
-                  <span>
-                    {formatCurrency(product.price - (product.price * (product.discountPercent / 100)) || 0)}{' '}
-                    <span style={{ textDecoration: 'line-through', fontSize:25,color:'black' }}>
-                      {formatCurrency(product.price)}
-                    </span>
-                  </span>
-                ) : (
-                  formatCurrency(product.price || 0)
-                )}
+      <Skeleton loading={!product} active>
+        <img src={product.image} alt={product.title} />  
+        <div className="product-info">
+          <h2>{product.title}</h2>
+          <p><span className="bold-info-description"> <span className="info-label">Mô tả:</span>{product.description}</span>
+          </p>
+          <p className="authors-publisher">
+            <span className="info-label">
+              Tác giả: <span className="bold-info">
+              {product.authors ? (
+                      product.authors.map((authors, index) => (
+                        <span key={index}>
+                          {index > 0 && ", "} 
+                          {authors.authorName}
+                        </span>
+                      ))
+                    ) : (
+                      <span>Không có tác giả</span>
+                    )}
               </span>
-          
-        </p>
-        <div className="product-quantity-controls">
-          <button onClick={() => handleQuantityChange(-1)}>-</button>
-          <input className="product-item-quantity" type="number"
-            value={quantity}
-            onChange={handleQuantityInputChange}
-            // onChange={(e) => setQuantity(e.target.value)}
-            min="1"
-            max={product.stock}/>
-          <button onClick={() => handleQuantityChange(1)}>+</button>
-          <p style={{marginLeft:"10px", marginTop:"10px"}}><strong>Còn:</strong>  {product.stock}</p>
+            </span>
+            <span className='info-label'>
+              Nhà xuất bản: <span className="bold-info">{product.publisher}</span>
+            </span>
+          </p>
+          <p className="category-quantity">
+            <span className="info-label" style={{paddingTop:8}}>
+              Thể loại: <span className="bold-info">
+              {product.categories ? (
+                      product.categories.map((category, index) => (
+                        <span key={index}>
+                          {index > 0 && ", "} 
+                          {category.categoryName}
+                        </span>
+                      ))
+                    ) : (
+                      <span>Không có thể loại</span>
+                    )}
+              </span>
+            </span>
+            <span className="info-label">
+              Đã bán: <span className="bold-info">{product.soldQuantity}</span>
+            </span>
+          </p>
+          <p>
+              <br/>
+              {console.log('product.discountPercent',product.discountPercent)}
+              <span className="bold-info-price">
+                  {product&& product.discountPercent > 0 ? (
+                    <span>
+                      {formatCurrency(product.price - (product.price * (product.discountPercent / 100)) || 0)}{' '}
+                      <span style={{ textDecoration: 'line-through', fontSize:25,color:'black' }}>
+                        {formatCurrency(product.price)}
+                      </span>
+                    </span>
+                  ) : (
+                    formatCurrency(product.price || 0)
+                  )}
+                </span>
+            
+          </p>
+          <div className="product-quantity-controls">
+            <button onClick={() => handleQuantityChange(-1)}>-</button>
+            <input className="product-item-quantity" type="number"
+              value={quantity}
+              onChange={handleQuantityInputChange}
+              // onChange={(e) => setQuantity(e.target.value)}
+              min="1"
+              max={product.stock}/>
+            <button onClick={() => handleQuantityChange(1)}>+</button>
+            <p style={{marginLeft:"10px", marginTop:"10px"}}><strong>Còn:</strong>  {product.stock}</p>
+          </div>
+        
+            {showErrorPopup && (
+            <ErrorPopup
+              message={`Số lượng không được vượt quá số lượng tồn kho`}
+              onClose={closeErrorPopup}
+            />
+          )}
+          <button className="buy-button"  onClick={handleBuyNow}>Mua ngay</button>
+          <button className="add-to-cart-button" onClick={addToCart} >Thêm giỏ hàng</button>
+          <button className='wish' style={{backgroundImage:`url('${isWished?wished:iconWish}')`}} onClick={handleWishChange}/>
+          <br/><br/>
+          <p><Rate disabled allowHalf value={averageRating} style={{fontSize: '25px'}} /> ({product.reviews?.length || 0} đánh giá)</p>
         </div>
-       
-          {showErrorPopup && (
-          <ErrorPopup
-            message={`Số lượng không được vượt quá số lượng tồn kho`}
-            onClose={closeErrorPopup}
-          />
-        )}
-        <button className="buy-button"  onClick={handleBuyNow}>Mua ngay</button>
-        <button className="add-to-cart-button" onClick={addToCart} >Thêm giỏ hàng</button>
-        <button className='wish' style={{backgroundImage:`url('${isWished?wished:iconWish}')`}} onClick={handleWishChange}/>
-        <br/><br/>
-        <p><Rate disabled allowHalf value={averageRating} style={{fontSize: '25px'}} /> ({product.reviews?.length || 0} đánh giá)</p>
-      </div>
+      </Skeleton>
       <ToastContainer
       position="top-right"
       autoClose={2000}

@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect, useRef} from 'react';
 import { Card, Button, Modal, Divider, Tag, Row, Col, Typography, Image, Empty } from 'antd';
 import { HeartOutlined, MessageOutlined, ShopOutlined, CheckCircleOutlined ,CloseCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import OrderDetail from './OrderDetail';
 import noDataImage from '../assets/images/cart_empty_icon.png'
 import { useNavigate } from 'react-router-dom';
-import { useCreateOrder, useCancelOrder } from '../utils/api';
+import { useCreateOrder, useCancelOrder, useConfirmedOrder } from '../utils/api';
 const formatCurrency = (value) => {
   const formattedValue = new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -24,13 +24,21 @@ const formatDate = (dateString) => {
   return `${day}-${month}-${year}`;
 };
 
-const OrderHistory = ({ orders,onStatusChange }) => {
+const OrderHistory = ({ orders,onStatusChange ,currentPage}) => {
   const navigate =useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {fetchPayment} =useCreateOrder();
+  const {fetchConfirmedOrder} =useConfirmedOrder();
+
   const {fetchCancelOrder} =useCancelOrder();
+  const listOrderRef = useRef(null);
 
   const [order, setOrder] = useState();
+  useEffect(() => {
+    if (listOrderRef.current) {
+      listOrderRef.current.scrollTo(0, 0);
+    }
+  }, [currentPage]);
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -74,14 +82,21 @@ const OrderHistory = ({ orders,onStatusChange }) => {
     await fetchPayment(totalAmount)
     localStorage.setItem('orderID',JSON.stringify(id))
   }
+  const handleConfirmOrder = async (id)=>{
+    const success =await fetchConfirmedOrder(id)
+    if (success) {
+      onStatusChange();
+    }
+  }
   const handleCancelOrder = async (id)=>{
     const success = await fetchCancelOrder(id)
     if (success){
       onStatusChange();
     }
   }
+
   return (
-    <div className="list-order-scroll">
+    <div className="list-order-scroll" ref={listOrderRef}>
        
       {orders.map((order) => (
         <>
@@ -160,6 +175,14 @@ const OrderHistory = ({ orders,onStatusChange }) => {
         <Row gutter={16}>
           <Col span={24}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2px' }}>
+            <Button
+              type="primary"
+              style={{ marginRight: 10,display:order.paymentStatus==='PAID' && order.status ==='DELIVERED' ?'inline-block' : 'none' }}
+              disabled={order.status==='CONFIRMED'}
+              onClick={()=> handleConfirmOrder(order._id)}
+            >
+              Đã nhận hàng
+            </Button>
             <Button
               type="dashed"
               style={{ marginRight: 10,display:order.paymentStatus==='NOT_PAID' && order.paymentMethod ==='ONLINE' && paymentAgain(order.orderDate) ?'inline-block' : 'none' }}

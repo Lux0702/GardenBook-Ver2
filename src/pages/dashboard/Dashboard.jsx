@@ -1,10 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Layout, Menu, Input, Avatar, Dropdown, Badge, Popover } from 'antd';
-import { MenuFoldOutlined, MenuUnfoldOutlined, BellOutlined, UserOutlined } from '@ant-design/icons';
-import { useNavigate, useLocation, Outlet,Link } from 'react-router-dom';
+import { Layout, Menu, Input, Avatar, Dropdown ,Modal} from 'antd';
+import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons';
+import { useNavigate, useLocation, Outlet, Link } from 'react-router-dom';
 import { items } from '../../components/dashboard/menuItems';
 import Logo from '../../assets/images/Book-logos_black.png';
-
+import { useProfileAdmin, useLogoutAdmin } from '../../utils/api';
+import { ToastContainer, collapseToast, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import InfoAdmin from '../../components/dashboard/InfoAdmin';
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
 
@@ -32,14 +35,6 @@ const generateMenuItems = (items) => {
     };
   });
 };
-const notificationsContent = (
-  <div>
-    <p>Notification 1</p>
-    <p>Notification 2</p>
-    <p>Notification 3</p>
-  </div>
-);
-
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -47,7 +42,26 @@ const Dashboard = () => {
   const location = useLocation();
   const [defaultSelectedKeys, setDefaultSelectedKeys] = useState(['1']);
   const [defaultOpenKeys, setDefaultOpenKeys] = useState(['1']); // Open the first menu by default
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const { userData, setUserDataAdmin, fetchProfileDataAdmin } = useProfileAdmin();
+  const { fetchLogoutAdmin } = useLogoutAdmin();
 
+  useEffect(() => {
+    const tokenString = localStorage.getItem('tokenAdmin');
+    const token = JSON.parse(tokenString);
+    const userInfo = localStorage.getItem('AdminInfo');
+    if (userInfo) {
+      setUserDataAdmin(JSON.parse(userInfo));
+    } else if (token) {
+      fetchProfileDataAdmin(token?.accessToken);
+    }
+  }, [fetchProfileDataAdmin, setUserDataAdmin]);
+  const handleView = async () => {
+    setIsDetailModalOpen(true);
+  };
+  const handleDetailCancel = () => {
+    setIsDetailModalOpen(false);
+  };
   const handleMenuClick = (e) => {
     const { keyPath } = e;
     const selectedItem = keyPath.length === 2 ?
@@ -55,6 +69,12 @@ const Dashboard = () => {
       items.find(item => item.key === keyPath[0]);
 
     navigate(`/admin/${selectedItem.path}`);
+  };
+
+  const handleLogout = async () => {
+    const tokenString = localStorage.getItem('tokenAdmin');
+    const token = JSON.parse(tokenString);
+    await fetchLogoutAdmin(token);
   };
 
   const updateMenuSelection = useCallback(() => {
@@ -70,35 +90,26 @@ const Dashboard = () => {
   useEffect(() => {
     updateMenuSelection();
   }, [updateMenuSelection]);
+
   const itemAccount = [
-    
     {
       key: '1',
-      // icon: <UserOutlined />,
-      label: (
-        <><Link to="#" className="link">Thông tin cá nhân</Link></>
-      ),
+      label: <span onClick={handleView}>Thông tin cá nhân</span>,
     },
     {
       key: '4',
-      // icon: <LogoutOutlined  />,
-      label: (
-        <span >
-        Đăng xuất
-      </span>
-      ),
+      label: <span onClick={handleLogout}>Đăng xuất</span>,
     },
   ];
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider trigger={null} collapsible collapsed={collapsed} width={250} style={{background: ' linear-gradient(45deg, rgba(24, 90, 157, 0.7), rgba(67, 206, 162, 0.5))'}}>
-        <div className="logo" style={{marginBottom: !collapsed? 50 : 0}}>
-
+      <Sider trigger={null} collapsible collapsed={collapsed} width={250} style={{ background: 'linear-gradient(45deg, rgba(24, 90, 157, 0.7), rgba(67, 206, 162, 0.5))' }}>
+        <div className="logo" style={{ marginBottom: !collapsed ? 50 : 0 }}>
           <img src={Logo} alt="Logo" style={{ width: '100%' }} />
         </div>
         <Menu
-          // theme="light"
-          style={{background: ' none'}}
+          style={{ background: 'none' }}
           mode="inline"
           selectedKeys={defaultSelectedKeys}
           openKeys={defaultOpenKeys}
@@ -108,7 +119,7 @@ const Dashboard = () => {
         />
       </Sider>
       <Layout className="site-layout">
-      <Header className="site-layout-background" style={{ display: 'flex', justifyContent: 'space-between', padding: 0, alignItems: 'center' }}>
+        <Header className="site-layout-background" style={{ display: 'flex', justifyContent: 'space-between', padding: 0, alignItems: 'center' }}>
           <div>
             {collapsed ? <MenuUnfoldOutlined className="trigger" onClick={() => setCollapsed(!collapsed)} /> : <MenuFoldOutlined className="trigger" onClick={() => setCollapsed(!collapsed)} />}
           </div>
@@ -118,15 +129,10 @@ const Dashboard = () => {
             onSearch={value => console.log(value)}
           />
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            {/* <Popover content={notificationsContent} title="Notifications" trigger="click">
-              <Badge count={5}>
-                <BellOutlined style={{ fontSize: '18px' }} />
-              </Badge>
-            </Popover> */}
-            <Dropdown menu={{items:itemAccount}} trigger={['click']}>
-              <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' , marginRight: 50}}>
-                <Avatar icon={<UserOutlined />} />
-                <span style={{ marginLeft: '8px' }}>User Name</span>
+            <Dropdown menu={{ items: itemAccount }} trigger={['click']}>
+              <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginRight: 50 }}>
+                <Avatar src={userData?.avatar} icon={!userData?.avatar && <UserOutlined />} />
+                <span style={{ marginLeft: '8px' }}>{userData?.fullName}</span>
               </div>
             </Dropdown>
           </div>
@@ -134,7 +140,26 @@ const Dashboard = () => {
         <Content style={{ margin: '24px 16px', padding: 24, minHeight: 280 }}>
           <Outlet />
         </Content>
+        <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"/>
       </Layout>
+      <Modal 
+        title={null}
+        open={isDetailModalOpen}
+        footer={null}
+        onCancel={handleDetailCancel}
+        >
+          <InfoAdmin/>
+      </Modal>
     </Layout>
   );
 };

@@ -76,11 +76,11 @@ const DeleteBook = () => {
   const [form] = Form.useForm();
   const { deleteBook, fetchGetAllDeleteBook } = useGetAllDeleteBook();
   const { detailBook, fetchBookDetails } = useBookDetail();
-  const { categories, fetchCategories } = useCategories();
+  const { categories,setCategories, fetchCategories } = useCategories();
   const { updateBook, fetchUpdateBooks } = useUpdateBooks();
   const { fetchRestoreBook } = useRestoreBook();
 
-  const { authors, fetchAuthors } = useAuthors();
+  const { authors,setAuthors, fetchAuthors } = useAuthors();
   const [filteredData, setFilteredData] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -96,14 +96,22 @@ const DeleteBook = () => {
         setSpinning(true);
         const success = await fetchGetAllDeleteBook();
         if (success) {setSpinning(false);}
-        await fetchCategories();
-        await fetchAuthors();
+        
       } catch (error) {
         console.log(error);
       } finally {
         // setSpinning(false);
       }
     };
+    const storedAuthors = localStorage.getItem('authors');
+    const storedCategories = localStorage.getItem('categories');
+    if ( storedAuthors && storedCategories) {
+      setAuthors(JSON.parse(storedAuthors));
+      setCategories(JSON.parse(storedCategories));
+    }
+    else{
+       Promise.all([fetchAuthors(),fetchCategories()]);
+    } 
     fetchData();
   }, []);
 

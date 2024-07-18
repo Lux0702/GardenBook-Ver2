@@ -7,7 +7,7 @@ const { Search } = Input;
 
 const AuthorList = () => {
   const [form] = Form.useForm();
-  const { authorsAll, fetchAuthors } = useAuthors();
+  const { authorsAll,setAuthorsAll, fetchAuthors } = useAuthors();
   const { fetchUpdateAuthor } = useUpdateAuthor();
   const { fetchAddAuthor } = useAddAuthor();
   const { fetchDeleteAuthor } = useDeleteAuthor();
@@ -32,7 +32,12 @@ const AuthorList = () => {
         setSpinning(false);
       }
     };
-    fetchData();
+    const storeAuthors = localStorage.getItem('authorsAll')
+    if (storeAuthors){
+      setAuthorsAll(JSON.parse(storeAuthors))
+    } else{
+      fetchData();
+    }
   }, [loading]);
 
   const handleAddAuthor = () => {

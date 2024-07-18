@@ -192,7 +192,7 @@ const ManageUser = () => {
             
           </div>
         </div>
-        <Button type="primary" icon={<PlusOutlined />} onClick={openAddUserModal}>
+        <Button type="primary" icon={<PlusOutlined />} onClick={openAddUserModal} style={{background:'#3697A6'}}>
               Thêm tài khoản
             </Button>
       </Card>

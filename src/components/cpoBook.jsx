@@ -10,6 +10,7 @@ import icon_buy from "../assets/icons/Icon_buy.svg";
 import icon_buy1 from "../assets/icons/Icon_buy1.svg";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useAddToWishList, useAddToCart } from '../utils/api';
+import LazyLoad from 'react-lazyload';
 
 function loadImage(source) {
     return new Promise((resolve) => {
@@ -114,7 +115,7 @@ const Book = (props) => {
     return (
         <div>
                 <div className="container-book" >
-                <Skeleton loading={!imageLoaded} active >
+                <Skeleton loading={!imageLoaded} active  style={{ height: 290 }}>
 
                 {discount > 0 ? (
                     <Badge.Ribbon text={`-${discount}%`} color="red" style={{ zIndex: 1000 }}>
@@ -126,6 +127,8 @@ const Book = (props) => {
                             backgroundSize: 'cover',
                             backgroundRepeat: 'no-repeat',
                             marginRight: '15px',
+                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', 
+                            borderRadius: '8px',
                         }}
                         loading='lazy'
                     /> 
@@ -139,6 +142,8 @@ const Book = (props) => {
                             backgroundSize: 'cover',
                             backgroundRepeat: 'no-repeat',
                             marginRight: '15px',
+                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', 
+                            borderRadius: '8px',
                         }}
                         loading='lazy'
                     /> 
@@ -160,7 +165,10 @@ const Book = (props) => {
                             alt=""
                             onClick={()=> handleWishChange(_id)}
                         />
-                    </div></Skeleton>   
+                    </div>
+                    </Skeleton> 
+
+              
                     <div className="container-content">
                         <div className="container-text">
                             <h6>{title}</h6>

@@ -1,6 +1,6 @@
 .App {
   background-color: rgb(245, 247, 247);/* Đặt màu nền tùy ý của bạn */
-  
+  height:max-content;
   font-family:Arial, Helvetica, sans-serif;
 }
 .App-logo {

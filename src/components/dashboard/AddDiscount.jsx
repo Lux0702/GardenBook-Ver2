@@ -3,18 +3,21 @@ import { Card, Form, Button, Slider, DatePicker, Select, Spin, message, Table, T
 import { DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { API_URL } from '../../utils/constant';
-import { useDataBook, useDeleteDiscount } from '../../utils/api';
+import { useDataBook, useDeleteDiscount, useGetDiscounts } from '../../utils/api';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { Search } = Input;
+
 const AddDiscount = () => {
   const [form] = Form.useForm();
-  const { dataBook, fetchBooks } = useDataBook();
+  const { discounts, fetchDiscounts } = useGetDiscounts();
+  const { dataBook, setBooks, fetchBooks } = useDataBook();
   const { fetchDeleteDiscount } = useDeleteDiscount();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [spinning, setSpinning] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [reload, setReload] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
@@ -22,7 +25,13 @@ const AddDiscount = () => {
     const fetchData = async () => {
       try {
         setSpinning(true);
-        await fetchBooks();
+        await fetchDiscounts();
+        const store = localStorage.getItem('books');
+        if (store) {
+          setBooks(JSON.parse(store));
+        } else {
+          await fetchBooks();
+        }
       } catch (error) {
         console.log(error);
       } finally {
@@ -30,26 +39,28 @@ const AddDiscount = () => {
       }
     };
     fetchData();
-  }, [loading]);
+  }, [reload]);
+
   useEffect(() => {
     setFilteredData(
-      dataBook.filter((item) =>
+      discounts.filter((item) =>
         item.title.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-  }, [searchTerm, dataBook]);
+  }, [searchTerm, discounts]);
+
   const handleAddDiscount = async (values) => {
     try {
       setLoading(true);
       const tokenString = localStorage.getItem('tokenAdmin');
       const token = JSON.parse(tokenString);
-      const { discountPercent, dateRange, bookId } = values;
+      const { discountPercent, dateRange, bookIds } = values;
       const startDate = dateRange ? dateRange[0].format('YYYY-MM-DD') : null;
       const endDate = dateRange ? dateRange[1].format('YYYY-MM-DD') : null;
 
       const newDiscount = { discountPercent, startDate, endDate };
 
-      if (bookId === 'all') {
+      if (bookIds.includes('all')) {
         const promises = dataBook.map(book => {
           return fetch(`${API_URL}/api/v1/books/${book._id}/discounts`, {
             method: 'POST',
@@ -63,22 +74,26 @@ const AddDiscount = () => {
         await Promise.all(promises);
         message.success('Thêm giảm giá cho tất cả sách thành công!');
       } else {
-        const response = await fetch(`${API_URL}/api/v1/books/${bookId}/discounts`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token?.accessToken}`,
-          },
-          body: JSON.stringify(newDiscount),
+        const promises = bookIds.map(bookId => {
+          return fetch(`${API_URL}/api/v1/books/${bookId}/discounts`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token?.accessToken}`,
+            },
+            body: JSON.stringify(newDiscount),
+          });
         });
-        const data = await response.json();
-        if (!response.ok) {
+        const results = await Promise.all(promises);
+        if (results.every(result => result.ok)) {
+          message.success('Thêm giảm giá thành công!');
+        } else {
           throw new Error('Thêm giảm giá thất bại!');
         }
-        message.success('Thêm giảm giá thành công!');
       }
 
       form.resetFields();
+      setReload(!reload);
     } catch (error) {
       message.error('Thêm giảm giá thất bại!');
     } finally {
@@ -88,38 +103,56 @@ const AddDiscount = () => {
 
   const handleDeleteDiscount = async (bookId) => {
     setLoading(true);
-    const success = await fetchDeleteDiscount(bookId);
-    if (success) {
-      message.success('Xóa giảm giá thành công!');
-    } else {
+    try {
+      const success = await fetchDeleteDiscount(bookId);
+      if (success) {
+        message.success('Xóa giảm giá thành công!');
+        setReload(!reload);
+      } else {
+        throw new Error('Xóa giảm giá thất bại!');
+      }
+    } catch (error) {
       message.error('Xóa giảm giá thất bại!');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDeleteSelectedDiscounts = async () => {
     setLoading(true);
-    const promises = selectedRowKeys.map(bookId => fetchDeleteDiscount(bookId));
-    const results = await Promise.all(promises);
-    if (results.every(result => result)) {
-      message.success('Đã xóa giảm giá cho các sách đã chọn!');
-    } else {
+    try {
+      const promises = selectedRowKeys.map(bookId => fetchDeleteDiscount(bookId));
+      const results = await Promise.all(promises);
+      if (results.every(result => result)) {
+        message.success('Đã xóa giảm giá cho các sách đã chọn!');
+        setReload(!reload);
+      } else {
+        throw new Error('Xóa giảm giá thất bại!');
+      }
+      setSelectedRowKeys([]);
+    } catch (error) {
       message.error('Xóa giảm giá thất bại!');
+    } finally {
+      setLoading(false);
     }
-    setSelectedRowKeys([]);
-    setLoading(false);
   };
 
   const handleDeleteAllDiscounts = async () => {
     setLoading(true);
-    const promises = dataBook.map(book => fetchDeleteDiscount(book._id));
-    const results = await Promise.all(promises);
-    if (results.every(result => result)) {
-      message.success('Đã xóa giảm giá cho tất cả sách!');
-    } else {
+    try {
+      const promises = discounts.map(book => fetchDeleteDiscount(book._id));
+      const results = await Promise.all(promises);
+      if (results.every(result => result)) {
+        message.success('Đã xóa giảm giá cho tất cả sách!');
+        setReload(!reload);
+      } else {
+        throw new Error('Xóa giảm giá thất bại!');
+      }
+    } catch (error) {
       message.error('Xóa giảm giá thất bại!');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const columns = [
@@ -150,6 +183,18 @@ const AddDiscount = () => {
       },
     },
     {
+      title: 'Thời gian bắt đầu',
+      dataIndex: 'startDate',
+      key: 'startDate',
+      render: (text) => text ? moment(text).format('DD/MM/YYYY') : 'N/A',
+    },
+    {
+      title: 'Thời gian kết thúc',
+      dataIndex: 'endDate',
+      key: 'endDate',
+      render: (text) => text ? moment(text).format('DD/MM/YYYY') : 'N/A',
+    },
+    {
       title: 'Thao tác',
       dataIndex: 'actions',
       key: 'actions',
@@ -174,13 +219,14 @@ const AddDiscount = () => {
       Table.SELECTION_NONE,
     ],
   };
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
   return (
     <>
-          <Card style={{ marginBottom: 10, padding: 0 }}>
+      <Card style={{ marginBottom: 10, padding: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h2>Danh sách giảm giá</h2>
           <Search
@@ -191,23 +237,31 @@ const AddDiscount = () => {
           />
         </div>
       </Card>
-    <div className="discount-container" style={{ display: 'flex', gap: '20px' }}>
-
-      <Card title="Danh sách sách" extra={
-        <Tooltip title="Xóa giảm giá các sách đã chọn">
-          <Button type="danger" icon={<DeleteOutlined />} onClick={handleDeleteSelectedDiscounts} disabled={!selectedRowKeys.length} />
-        </Tooltip>
-      } style={{ flex: 1 }}>
-        <Spin spinning={spinning}>
-          <Table
-            rowSelection={rowSelection}
-            columns={columns}
-            dataSource={filteredData.map((book, index) => ({ key: book._id, ...book }))}
-            scroll={{ y: 500 }}
-          />
-        </Spin>
-      </Card>
-      <Card title="Tạo giảm giá mới" style={{ height: '400px' }}>
+      <div className="discount-container" style={{ display: 'flex', gap: '20px' }}>
+        <Card
+          title="Danh sách sách"
+          extra={
+            <Tooltip title="Xóa giảm giá các sách đã chọn">
+              <Button
+                type="danger"
+                icon={<DeleteOutlined />}
+                onClick={handleDeleteSelectedDiscounts}
+                disabled={!selectedRowKeys.length}
+              />
+            </Tooltip>
+          }
+          style={{ flex: 1 }}
+        >
+          <Spin spinning={spinning}>
+            <Table
+              rowSelection={rowSelection}
+              columns={columns}
+              dataSource={filteredData.map((book) => ({ key: book._id, ...book }))}
+              scroll={{ y: 500 }}
+            />
+          </Spin>
+        </Card>
+        <Card title="Tạo giảm giá mới" style={{ height: '400px' }}>
           <Form
             form={form}
             layout="vertical"
@@ -215,7 +269,7 @@ const AddDiscount = () => {
             initialValues={{
               discountPercent: 0,
               dateRange: null,
-              bookId: 'all',
+              bookIds: [],
             }}
           >
             <Form.Item
@@ -236,14 +290,21 @@ const AddDiscount = () => {
               />
             </Form.Item>
             <Form.Item
-              name="bookId"
+              name="bookIds"
               label="Sách"
               rules={[{ required: true, message: 'Vui lòng chọn sách' }]}
             >
-              <Select>
+              <Select
+                mode="multiple"
+                allowClear
+                placeholder="Chọn sách"
+                style={{ width: '100%' }}
+              >
                 <Option value="all">Tất cả sách</Option>
-                {dataBook.map(book => (
-                  <Option key={book._id} value={book._id}>{book.title}</Option>
+                {dataBook.map((book) => (
+                  <Option key={book._id} value={book._id}>
+                    {book.title}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
@@ -253,8 +314,9 @@ const AddDiscount = () => {
               </Button>
             </Form.Item>
           </Form>
-      </Card>
-    </div>  </>
+        </Card>
+      </div>
+    </>
   );
 };
 

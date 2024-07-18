@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Form, Input, Button, Radio, Upload, Avatar, DatePicker ,Spin} from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import "../assets/css/userpage.css";
+import "../../assets/css/userpage.css";
 import 'react-toastify/dist/ReactToastify.css';
 import dayjs from 'dayjs';
-import avatar_user from '../assets/images/avatar.png';
-import { useUploadProfile } from '../utils/api';
+import avatar_user from '../../assets/images/avatar.png';
+import { useUploadProfile } from '../../utils/api';
 import { toast } from 'react-toastify';
-const UserInfo = () => {
+const InfoAdmin = () => {
   const [spinning, setSpinning]=useState(false)
   const [form] = Form.useForm();
   const {userUpdate, fetchUploadProfile} =useUploadProfile();
@@ -40,7 +40,7 @@ const UserInfo = () => {
   };
 
   const updateUserData = useCallback(() => {
-    const userString = localStorage.getItem('userInfo');
+    const userString = localStorage.getItem('AdminInfo');
     const userData = JSON.parse(userString);
     console.log('profile:', userData);
     if (userData) {
@@ -112,8 +112,8 @@ const UserInfo = () => {
 // useEffect(()=>{
 // })
   return (
-    <div className="user-info">
-      <div className="user-info-left">
+    <div className="user-info" style={{marginLeft:0}}>
+      <div className="user-info-left" style={{marginLeft:0}}>
         <h2>Hồ Sơ Của Tôi</h2>
         <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
         <Form
@@ -200,4 +200,4 @@ const UserInfo = () => {
   );
 };
 
-export default UserInfo;
+export default InfoAdmin;

@@ -5,10 +5,6 @@
   margin: 20px;
   max-height: 600px; /* Đặt chiều cao tối đa cho container */
   overflow-y: auto; /* Bật cuộn dọc khi nội dung vượt quá chiều cao tối đa */
-  /* padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #fff; */
 }
 .order-history h1 {
   font-size: 24px;

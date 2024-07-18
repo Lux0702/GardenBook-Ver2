@@ -8,7 +8,7 @@ import { useParams, Link } from 'react-router-dom';
 import Book from '../components/cpoBook';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import {  Spin ,Avatar, Rate,Breadcrumb } from 'antd'
+import {  Spin ,Avatar, Rate,Breadcrumb,Skeleton } from 'antd'
 // import { FreeMode, Pagination  } from 'swiper/modules';
 import { API_URL } from "../utils/constant";
 // import { CImage } from '@coreui/react';
@@ -34,9 +34,10 @@ const BookDetails = () => {
     const fetchData = async () => {
       try {
         // setSpinning(true)
-        await fetchBookDetails(id)
         window.scrollTo(0, 0);
-        await fetchBookRelates(id)
+
+        await Promise.all([fetchBookDetails(id),fetchBookRelates(id)])
+
       } catch (error) {
         console.error('Error fetching bookDetails:', error)
       }
@@ -95,7 +96,9 @@ const BookDetails = () => {
                 ]}
               />
         {/* <h1 className='book-h2 info-label-review'>Chi tiết sản phẩm</h1> */}
-        <BookDetail product={detailBook} onQuantityChange={handleQuantityChange} />
+        <Skeleton loading={false} active >
+          <BookDetail product={detailBook} onQuantityChange={handleQuantityChange} />
+        </Skeleton>
         <div className="book-Relate" >
             <p><strong className='info-label-review'>SẢN PHẨM LIÊN QUAN</strong></p>
             <Carousel 

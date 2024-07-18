@@ -70,7 +70,7 @@ const HistoryOrderList = () => {
       onChange={handleSearch}
       style={{ margin: '10px 0', width: '100%' }}
     />
-    <OrderHistory orders={paginatedOrders}  onStatusChange={handleStateChange}/>
+    <OrderHistory orders={paginatedOrders}  onStatusChange={handleStateChange} currentPage={currentPage}/>
     <Pagination
         current={currentPage}
         pageSize={itemsPerPage}
