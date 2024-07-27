@@ -90,7 +90,7 @@ const Post = () => {
 
       fetchRecommendData();
       if (storedUser) {
-        clearInterval(intervalId);
+        clearInterval(intervalId); 
       }
     }, 1000); // Check every second
 

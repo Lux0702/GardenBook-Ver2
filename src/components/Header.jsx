@@ -105,11 +105,11 @@ const Header = () => {
   const handleNotificationClick = (item)=>{
     window.location.href=item;
   }
-  useEffect(() =>{
+  const fetchNotifications = () => {
     const token = JSON.parse(localStorage.getItem('token') || '""'); 
     const user = JSON.parse(localStorage.getItem('userInfo') || '""'); 
 
-    if (!token || !user ) {
+    if (!token || !user) {
       console.error('Token hoặc UserId không tồn tại.');
       return;
     }
@@ -129,7 +129,30 @@ const Header = () => {
       .catch(error => {
         console.error('Error fetching notifications:', error);
       });
-  },[isLoggedIn])
+  };
+  useEffect(() => {
+    
+
+    // Gọi API ngay khi component mount
+    fetchNotifications();
+
+    // Thiết lập interval để gọi API mỗi phút một lần
+ 
+  }, [isLoggedIn]);
+  const setupInterval = () => {
+    const interval = setInterval(fetchNotifications, 60000); // 60000ms = 1 phút
+
+    // Làm sạch interval khi component unmount
+    return () => clearInterval(interval);
+  };
+
+  // useEffect để gọi hàm setupInterval
+  useEffect(() => {
+    const cleanUpInterval = setupInterval();
+
+    // Trả về hàm làm sạch khi component unmount
+    return cleanUpInterval;
+  }, []);
   // console.log('now:', currentPath);
     // Update userInfo and tokenInfo when localStorage changes
     const handleStorageChange = () => {

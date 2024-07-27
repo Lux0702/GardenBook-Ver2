@@ -15,7 +15,7 @@ return(
           author={book.authors}
           price={book.price}
           _id={book._id}
-          wish_icon={book.iconWish}
+          discount={book.discountPercent}
         />
       </div>
     ))}

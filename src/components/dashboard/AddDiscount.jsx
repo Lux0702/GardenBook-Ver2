@@ -3,8 +3,10 @@ import { Card, Form, Button, Slider, DatePicker, Select, Spin, message, Table, T
 import { DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { API_URL } from '../../utils/constant';
-import { useDataBook, useDeleteDiscount, useGetDiscounts } from '../../utils/api';
+import { useDataBook, useDeleteDiscount, useGetDiscounts, useAddDiscount,useCodeCoupon } from '../../utils/api';
+import axios from 'axios';
 
+import AddCouponCard from './AddCoupon';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -14,12 +16,30 @@ const AddDiscount = () => {
   const { discounts, fetchDiscounts } = useGetDiscounts();
   const { dataBook, setBooks, fetchBooks } = useDataBook();
   const { fetchDeleteDiscount } = useDeleteDiscount();
+  const { addDiscount } = useAddDiscount();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [spinning, setSpinning] = useState(false);
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState([]);
+  const {codeCoupon, fetchCodeCoupon} = useCodeCoupon();
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
+
+  const fetchCoupons = async () => {
+    setLoading(true);
+    try {
+      await fetchCodeCoupon()
+    } catch (error) {
+      console.error('Error fetching coupons:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCoupons();
+  }, [reload]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +79,7 @@ const AddDiscount = () => {
       const endDate = dateRange ? dateRange[1].format('YYYY-MM-DD') : null;
 
       const newDiscount = { discountPercent, startDate, endDate };
-
+      console.log('newDiscount', newDiscount, bookIds);
       if (bookIds.includes('all')) {
         const promises = dataBook.map(book => {
           return fetch(`${API_URL}/api/v1/books/${book._id}/discounts`, {
@@ -69,26 +89,29 @@ const AddDiscount = () => {
               Authorization: `Bearer ${token?.accessToken}`,
             },
             body: JSON.stringify(newDiscount),
-          });
+          })
+            .then(response => response.ok)
+            .catch(() => false); // Trả về false nếu có lỗi
         });
-        await Promise.all(promises);
-        message.success('Thêm giảm giá cho tất cả sách thành công!');
+
+        const results = await Promise.all(promises);
+        if (results.every(result => result)) {
+          message.success('Thêm giảm giá cho tất cả sách thành công!');
+        } else {
+          message.error('Thêm giảm giá cho tất cả thất bại!');
+        }
       } else {
         const promises = bookIds.map(bookId => {
-          return fetch(`${API_URL}/api/v1/books/${bookId}/discounts`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token?.accessToken}`,
-            },
-            body: JSON.stringify(newDiscount),
-          });
+          return addDiscount(newDiscount, bookId)
+            .then(success => success)
+            .catch(() => false); // Trả về false nếu có lỗi
         });
+
         const results = await Promise.all(promises);
-        if (results.every(result => result.ok)) {
+        if (results.every(result => result)) {
           message.success('Thêm giảm giá thành công!');
         } else {
-          throw new Error('Thêm giảm giá thất bại!');
+          message.error('Thêm giảm giá thất bại!');
         }
       }
 
@@ -210,6 +233,38 @@ const AddDiscount = () => {
     },
   ];
 
+  const couponColumns = [
+    {
+      title: 'Mã',
+      dataIndex: 'code',
+      key: 'code',
+    },
+    {
+      title: 'Giảm giá',
+      dataIndex: 'discountAmount',
+      key: 'discountAmount',
+      render: (discountAmount) => `${discountAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}`,
+    },
+    {
+      title: 'Ngày bắt đầu',
+      dataIndex: 'startDate',
+      key: 'startDate',
+      render: (startDate) => moment(startDate).format('YYYY-MM-DD'),
+    },
+    {
+      title: 'Ngày kết thúc',
+      dataIndex: 'endDate',
+      key: 'endDate',
+      render: (endDate) => moment(endDate).format('YYYY-MM-DD'),
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    // Thêm các cột khác nếu cần thiết
+  ];
+
   const rowSelection = {
     selectedRowKeys,
     onChange: setSelectedRowKeys,
@@ -315,6 +370,20 @@ const AddDiscount = () => {
             </Form.Item>
           </Form>
         </Card>
+        
+      </div>
+      <div className="coupon-container" style={{ display: 'flex', gap: '20px', marginTop: 20}}>
+          <Card title="Danh sách mã giảm giá" style={{width: 800}}>
+            <Spin spinning={loading}>
+              <Table
+                columns={couponColumns}
+                dataSource={codeCoupon?.map((coupon) => ({ key: coupon._id, ...coupon }))}
+                scroll={{ y: 500 }}
+              />
+            </Spin>
+          </Card>
+       
+        <Card style={{ flex: '1' }}><AddCouponCard /></Card>
       </div>
     </>
   );

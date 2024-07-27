@@ -2069,21 +2069,35 @@ export const useGetDiscounts = () => {
 };
 
 export const useAddDiscount = () => {
-  const addDiscount = async (payload) => {
+  const addDiscount = async (payload,id) => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/discounts`, {
+      console.log('payload',payload.discountPercent);
+
+      const tokenString = localStorage.getItem('tokenAdmin')
+      const token = JSON.parse(tokenString)
+      const response = await fetch(`${API_URL}/api/v1/books/${id}/discounts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token?.accessToken}`, 
         },
         body: JSON.stringify(payload),
       });
-      if (!response.ok) {
-        throw new Error('Failed to add discount');
+      const data = await response.json();
+      if (response.ok) {
+        console.log('respone',data.message);
+
+          return true
+      }else{
+        console.log('respone',data.data);
+        console.log('respone',data.message);
+
+        return false
+
       }
     } catch (error) {
-      console.error('Error adding discount:', error);
-      throw error;
+      console.error('Error adding discount:', );
+      return false
     }
   };
 
@@ -2307,4 +2321,33 @@ export const useConfirmedOrder = () =>{
   };
   
   return  { fetchConfirmedOrder}
+}
+
+export const useCodeCoupon = () =>{
+  const [codeCoupon, setBooks] = useState([])
+  const fetchCodeCoupon = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/v1/coupons/available`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        if (response.ok) {
+          const post = await response.json()
+          setBooks(post.data)
+          // localStorage.setItem('post',JSON.stringify(post.data))
+          console.log('Get data success', post.data)
+          return true;
+        } else {
+          console.log('Error fetching books:', response.statusText)
+          return false;
+        }
+      } catch (error) {
+        console.log('Error fetching books data:', error)
+        return false
+      }
+    }
+  
+  return  {codeCoupon, fetchCodeCoupon}
 }

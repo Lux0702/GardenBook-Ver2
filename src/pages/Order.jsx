@@ -9,7 +9,7 @@ import ChooseAddress from '../components/ChooseAddress';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
 import OrderItem from '../components/OrderItem';
-import { useCreateOrder } from '../utils/api';
+import { useCreateOrder,useCodeCoupon } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,6 +21,7 @@ const items = new Array(15).fill(null).map((_, index) => ({
 const Order = () => {
   const navigate = useNavigate();
   const {fetchCreateOrder,fetchPayment}= useCreateOrder();
+  const {codeCoupon,fetchCodeCoupon}= useCodeCoupon();
   const [spinning, setSpinning] = useState(false);
   const [addresses, setAddresses] = useState();
   const [modalOpen, setModalOpen] = useState(false);
@@ -31,6 +32,8 @@ const Order = () => {
   const [selectedDelivery, setSelectedDelivery] = useState(null);
   const [orderItems, setorderItems] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -48,6 +51,20 @@ const Order = () => {
       return toast.info('vui lòng chọn địa chỉ giao hàng !!!');
     }
   }
+  useEffect(()=>{
+    const fetch = async ()=>{
+      try{
+        await fetchCodeCoupon();
+      }catch(error){
+        console.log("lỗi")
+      }
+    }
+    fetch();
+  },[])
+  const couponOptions = [
+    { value: 'KHUYENMAI', label: 'KHUYENMAI - Giảm 10,000 VND', discountAmount: 10000 },
+    { value: '2024VN', label: '2024VN - Giảm 50,000 VND', discountAmount: 50000 },
+  ];
   useEffect(()=>{
     const userString = localStorage.getItem('userInfo');
     if (userString) {
@@ -98,6 +115,9 @@ const Order = () => {
     }).format(value);
     return formattedValue;
 };
+const handleCouponChange = (selectedOption) => {
+  setSelectedCoupon(selectedOption);
+};
 const handleOrder = async()=>{
   if(!addresses){
     return toast.warning('Vui lòng nhập thông tin địa chỉ giao hàng')
@@ -106,6 +126,9 @@ const handleOrder = async()=>{
     return toast.warning('Vui lòng chọn phương thức thanh toán và phương thức vận chuyển!')
   }
   const cartItems = orderItems.map((item) => item._id);
+  const discountAmount = selectedCoupon ? selectedCoupon.discountAmount : 0;
+  const totalAmount = totalPrice + (selectedDelivery ? selectedDelivery.value : 0) - discountAmount;
+
   console.log('dia chi:',addresses)
   console.log('dia chi:',cartItems)
   const orderData = {
@@ -113,7 +136,7 @@ const handleOrder = async()=>{
     fullName: addresses.name,
     phone: addresses.phoneNumber,
     address: addresses.address,
-    totalAmount: totalPrice,
+    totalAmount: totalAmount,
     paymentMethod: selectedPaymentMethod?.value,
   };
   try{
@@ -179,7 +202,7 @@ const handleOrder = async()=>{
         <Col span={22}>
           <span style={{ fontWeight: 'bold' }}>{addresses?.name} </span> 
           <span style={{ marginLeft: '10px' }}>{addresses?.phoneNumber} 
-            <span type="default" style={{ marginLeft: '10px', color: 'red' }}>{addresses?.isDefault===true? 'Mặc dịnh':''}</span></span>
+            <span type="default" style={{ marginLeft: '10px', color: 'red' }}>{addresses?.isDefault===true? 'Mặc định':''}</span></span>
         </Col>
         <Col span={2}>
           <Button type='link' onClick={() => setModalOpen(true)}>Thay Đổi</Button>
@@ -246,6 +269,16 @@ const handleOrder = async()=>{
                               styles={customStyles}
                               placeholder='Chọn phương thức vận chuyển'
                             />
+     <p style={{color: 'black', fontWeight:'500',fontSize:'20px', fontStyle:"italic", marginBottom:0}}>Mã giảm giá</p>
+
+                            <Select
+                              isClearable
+                              onChange={handleCouponChange}
+                              options={couponOptions}
+                              value={selectedCoupon ? selectedCoupon : null}
+                              styles={customStyles}
+                              placeholder='Chọn mã giảm giá'
+                            />
                     </Col>
                     <Col span={5} xs="6" className="mb-3" style={{textAlign:'left'}}>
                     <p style={{color: 'black', fontWeight:'500',fontSize:'20px', fontStyle:"italic"}}>Thành tiền</p>
@@ -261,7 +294,7 @@ const handleOrder = async()=>{
                     </Col>
                     <Col>
                     <p style={{color: 'black'}} >
-                        <strong>Tổng thanh toán:<span style={{fontSize:'15px', color:'red', marginLeft:'5px'}}>{formatCurrency(totalPrice + (selectedDelivery ? selectedDelivery.value : 0) || 0)}</span>
+                        <strong>Tổng thanh toán ({selectedItemsCount} Sản phẩm): {formatCurrency(totalPrice + (selectedDelivery ? selectedDelivery.value : 0) - (selectedCoupon ? selectedCoupon.discountAmount : 0) || 0)}
                         </strong>
                       </p>
                             
@@ -280,7 +313,7 @@ const handleOrder = async()=>{
               <span style={{marginLeft:'20px'}}>Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo <span style={{color:'red', textDecoration:'underline'}}>Điều khoản Garden Book</span></span>
             </div>
             <div className="right-section" fstyle={{fontSize:'20px'}}>
-            <strong style={{fontSize:'20px'}}>Tổng thanh toán ({selectedItemsCount} Sản phẩm): {formatCurrency(totalPrice + (selectedDelivery ? selectedDelivery.value : 0) || 0)}</strong>
+            <strong style={{fontSize:'20px'}}>Tổng thanh toán ({selectedItemsCount} Sản phẩm): {formatCurrency(totalPrice + (selectedDelivery ? selectedDelivery.value : 0) - (selectedCoupon ? selectedCoupon.discountAmount : 0) || 0)}</strong>
               <Button type='default'  style={{ marginLeft: '20px',fontSize:'15px' ,textAlign:'center', background:'#3697A6', color:'black'}} onClick={handleOrder}>Đặt Hàng</Button>
             </div>
         </div>

@@ -32,7 +32,7 @@ export const useTokenExpirationCheck = () => {
       }
     } catch (error) {
       console.error(`Lỗi kết nối khi refresh ${tokenType}:`, error);
-      toast.error('Xác thực hết hạn, vui lòng đăng nhập lại');
+      // toast.error('Xác thực hết hạn, vui lòng đăng nhập lại');
       navigate(tokenType === 'token' ? '/login' : '/adminlogin');
       throw error;
     }
